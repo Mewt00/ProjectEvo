@@ -1,0 +1,7 @@
+<ImageAsset
+    AssetName="bladestrike"
+    ImageFile="bladestrike.png"
+    CellCountX="2"
+    CellCountY="1"
+    CellWidth="70"
+    CellHeight="70" 	/>

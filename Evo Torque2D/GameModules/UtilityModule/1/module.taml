@@ -1,0 +1,9 @@
+<ModuleDefinition
+	ModuleId="Utility"
+	VersionId="1"
+	Description="Useful functions and math"
+	Group="game"
+	ScriptFile="utility.cs"
+	CreateFunction="create"
+	DestroyFunction="destroy">
+</ModuleDefinition>

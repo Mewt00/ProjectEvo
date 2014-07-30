@@ -1,0 +1,5 @@
+<AnimationAsset
+    AssetName="playertarredAnim"
+    Image="@asset=GameAssets:playertarred"
+    AnimationFrames="0 1 0"
+    AnimationTime="0.8" />

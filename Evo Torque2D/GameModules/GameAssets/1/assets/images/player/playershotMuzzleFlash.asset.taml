@@ -1,0 +1,7 @@
+<ImageAsset
+    AssetName="playershotMuzzleFlash"
+    ImageFile="playershotMuzzleFlash.png"
+    CellCountX="5"
+    CellCountY="1"
+    CellWidth="28"
+    CellHeight="38" />

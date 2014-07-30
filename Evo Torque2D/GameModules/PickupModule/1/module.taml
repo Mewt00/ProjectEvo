@@ -1,0 +1,10 @@
+<ModuleDefinition
+	ModuleId="PickupModule"
+	VersionId="1"
+	Description="Pickup Parent Class"
+	Dependencies="AppCore"
+	Group="game"
+	ScriptFile="main.cs"
+	CreateFunction="create"
+	DestroyFunction="destroy">
+</ModuleDefinition>

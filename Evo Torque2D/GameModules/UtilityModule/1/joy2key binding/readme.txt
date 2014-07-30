@@ -1,0 +1,1 @@
+Copy EvoControls.cfg into an adjacent folder to your joy2key exe (http://joytokey.net/en/download).

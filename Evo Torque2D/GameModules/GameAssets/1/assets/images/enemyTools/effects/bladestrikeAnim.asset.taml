@@ -1,0 +1,5 @@
+<AnimationAsset
+    AssetName="bladestrikeAnim"
+    Image="@asset=GameAssets:bladestrike"
+    AnimationFrames="0 1"
+    AnimationTime="0.35" />

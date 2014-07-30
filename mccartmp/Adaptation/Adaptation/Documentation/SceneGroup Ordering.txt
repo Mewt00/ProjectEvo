@@ -1,0 +1,9 @@
+*SceneGroups can be set from 0-31*
+*SceneGroups used for collision management*
+*Note: SceneLayers are not used for collision grouping, only for rendering depth purposes*
+----------------------------------------------------
+ 0: default
+ 5: Player
+ 6: PlayerShots
+10: Enemies
+15: Walls/Obsticals

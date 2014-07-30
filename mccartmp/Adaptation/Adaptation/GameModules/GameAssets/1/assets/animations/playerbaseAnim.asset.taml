@@ -1,0 +1,5 @@
+<AnimationAsset
+    AssetName="playerbaseAnim"
+    Image="@asset=GameAssets:playerbase"
+    AnimationFrames="0 1 0"
+    AnimationTime="0.8" />

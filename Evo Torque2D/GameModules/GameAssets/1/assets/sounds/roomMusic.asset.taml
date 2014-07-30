@@ -1,0 +1,4 @@
+<AudioAsset
+    AssetName="roomMusic"
+    AssetAutoUnload="0"
+    AudioFile="roomMusic.wav" />

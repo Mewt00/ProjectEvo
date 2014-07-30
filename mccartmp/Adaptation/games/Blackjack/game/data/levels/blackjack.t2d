@@ -1,0 +1,311 @@
+%levelContent = new t2dSceneGraph() {
+   canSaveDynamicFields = "1";
+   class = "BlackJackSceneGraph";
+   UseLayerSorting = "1";
+   layerSortMode0 = "Normal";
+   layerSortMode1 = "Normal";
+   layerSortMode2 = "Normal";
+   layerSortMode3 = "Normal";
+   layerSortMode4 = "Normal";
+   layerSortMode5 = "Y Axis";
+   layerSortMode6 = "Normal";
+   layerSortMode7 = "Normal";
+   layerSortMode8 = "Normal";
+   layerSortMode9 = "Normal";
+   layerSortMode10 = "Y Axis";
+   layerSortMode11 = "Normal";
+   layerSortMode12 = "Normal";
+   layerSortMode13 = "Normal";
+   layerSortMode14 = "Normal";
+   layerSortMode15 = "Y Axis";
+   layerSortMode16 = "Normal";
+   layerSortMode17 = "Normal";
+   layerSortMode18 = "Normal";
+   layerSortMode19 = "Normal";
+   layerSortMode20 = "Normal";
+   layerSortMode21 = "Normal";
+   layerSortMode22 = "Normal";
+   layerSortMode23 = "Normal";
+   layerSortMode24 = "Normal";
+   layerSortMode25 = "Normal";
+   layerSortMode26 = "Normal";
+   layerSortMode27 = "Normal";
+   layerSortMode28 = "Normal";
+   layerSortMode29 = "Normal";
+   layerSortMode30 = "Normal";
+   layerSortMode31 = "Normal";
+   DebugRendering = "0";
+      cameraPosition = "0.000000 0.000000";
+      cameraSize = "200.000000 150.000000";
+      scenePhysicsFPSActive = "0";
+      scenePhysicsLimitFPS = "0.5";
+      scenePhysicsMaxIterations = "3";
+      scenePhysicsTargetFPS = "80";
+
+   new t2dSceneObject(shoe) {
+      canSaveDynamicFields = "1";
+      class = "cardStack";
+      Position = "8.000 -104.500";
+      size = "14.000 19.000";
+      Layer = "10";
+      CollisionMaxIterations = "3";
+         hSkew = "0";
+         mountID = "2";
+   };
+   new t2dSceneObject(dealerHand) {
+      canSaveDynamicFields = "1";
+      class = "cardStack";
+      Position = "22.232 -52.240";
+      size = "110.000 19.000";
+      Layer = "10";
+      CollisionMaxIterations = "3";
+         container = "3809";
+         hSkew = "21";
+         mountID = "3";
+   };
+   new t2dSceneObject(discard) {
+      canSaveDynamicFields = "1";
+      class = "cardStack";
+      Position = "-9.302 -104.500";
+      size = "14.000 19.000";
+      Layer = "10";
+      CollisionMaxIterations = "3";
+         container = "4856";
+         hSkew = "-0.5";
+         mountID = "4";
+   };
+   new t2dSceneObjectGroup() {
+      canSaveDynamicFields = "1";
+
+      new t2dTileMap() {
+         canSaveDynamicFields = "1";
+         Visible = "0";
+         CollisionMaxIterations = "3";
+            mountID = "5";
+      };
+   };
+   new t2dSceneObjectGroup() {
+      canSaveDynamicFields = "1";
+
+      new t2dTileMap() {
+         canSaveDynamicFields = "1";
+         Visible = "0";
+         CollisionMaxIterations = "3";
+            mountID = "6";
+      };
+   };
+   new t2dSceneObjectGroup() {
+      canSaveDynamicFields = "1";
+
+      new t2dTileMap() {
+         canSaveDynamicFields = "1";
+         Visible = "0";
+         CollisionMaxIterations = "3";
+            mountID = "7";
+      };
+   };
+   new t2dSceneObjectGroup() {
+      canSaveDynamicFields = "1";
+
+      new t2dTileMap() {
+         canSaveDynamicFields = "1";
+         Visible = "0";
+         CollisionMaxIterations = "3";
+            mountID = "8";
+      };
+   };
+   new t2dSceneObjectGroup() {
+      canSaveDynamicFields = "1";
+
+      new t2dTileMap() {
+         canSaveDynamicFields = "1";
+         Visible = "0";
+         CollisionMaxIterations = "3";
+            mountID = "9";
+      };
+   };
+   new t2dSceneObjectGroup() {
+      canSaveDynamicFields = "1";
+
+      new t2dTileMap() {
+         canSaveDynamicFields = "1";
+         Visible = "0";
+         CollisionMaxIterations = "3";
+            mountID = "10";
+      };
+   };
+   new t2dSceneObjectGroup() {
+      canSaveDynamicFields = "1";
+
+      new t2dTileMap() {
+         canSaveDynamicFields = "1";
+         Visible = "0";
+         CollisionMaxIterations = "3";
+            mountID = "11";
+      };
+   };
+   new t2dSceneObjectGroup() {
+      canSaveDynamicFields = "1";
+
+      new t2dTileMap() {
+         canSaveDynamicFields = "1";
+         Visible = "0";
+         CollisionMaxIterations = "3";
+            mountID = "12";
+      };
+   };
+   new t2dSceneObjectGroup() {
+      canSaveDynamicFields = "1";
+
+      new t2dTileMap() {
+         canSaveDynamicFields = "1";
+         Visible = "0";
+         CollisionMaxIterations = "3";
+            mountID = "13";
+      };
+   };
+   new t2dStaticSprite() {
+      imageMap = "feltImageMap";
+      frame = "0";
+      canSaveDynamicFields = "1";
+      size = "200.000 150.000";
+      Layer = "31";
+      CollisionMaxIterations = "3";
+         mountID = "14";
+   };
+   new t2dSceneObjectGroup() {
+      canSaveDynamicFields = "1";
+
+      new t2dTileMap() {
+         canSaveDynamicFields = "1";
+         Visible = "0";
+         CollisionMaxIterations = "3";
+            mountID = "15";
+      };
+   };
+   new t2dSceneObjectGroup() {
+      canSaveDynamicFields = "1";
+
+      new t2dTileMap() {
+         canSaveDynamicFields = "1";
+         Visible = "0";
+         CollisionMaxIterations = "3";
+            mountID = "16";
+      };
+   };
+   new t2dSceneObject(handArea) {
+      canSaveDynamicFields = "1";
+      Position = "0.000 -2.757";
+      size = "200.000 32.000";
+      Layer = "15";
+      CollisionMaxIterations = "3";
+         mountID = "17";
+   };
+   new t2dAnimatedSprite(activePointer) {
+      animationName = "arrowAnimation";
+      canSaveDynamicFields = "1";
+      class = "pointer";
+      Position = "10.734 -85.311";
+      size = "15.500 15.500";
+      CollisionMaxIterations = "3";
+         mountID = "18";
+   };
+   new t2dStaticSprite(dealerScoreImage) {
+      imageMap = "scoreImageMap";
+      frame = "0";
+      canSaveDynamicFields = "1";
+      Visible = "0";
+      Position = "-43.220 -52.542";
+      size = "12.500 12.500";
+      Layer = "10";
+      CollisionMaxIterations = "3";
+         mountID = "19";
+   };
+   new t2dStaticSprite(betMenu) {
+      imageMap = "betMenuImageMap";
+      frame = "0";
+      canSaveDynamicFields = "1";
+      Position = "-68.605 109.000";
+      size = "59.750 41.500";
+      Layer = "12";
+      CollisionMaxIterations = "3";
+         mountID = "20";
+   };
+   new t2dTextObject(credit) {
+      canSaveDynamicFields = "1";
+      Position = "-67.574 63.860";
+      size = "26.250 10.000";
+      Layer = "13";
+      CollisionMaxIterations = "3";
+      MountOffset = "0.043 -0.160";
+      MountOwned = "0";
+      MountInheritAttributes = "0";
+      text = "$10000";
+      font = "Garamond";
+      wordWrap = "0";
+      hideOverflow = "1";
+      textAlign = "Left";
+      lineHeight = "10";
+      aspectRatio = "1";
+      lineSpacing = "0";
+      characterSpacing = "0";
+      autoSize = "1";
+      fontSizes = "40";
+      textColor = "1 1 1 1";
+         amount = "10000";
+         hideOverlap = "0";
+         mountID = "22";
+         mountToID = "21";
+   };
+   new t2dStaticSprite(moneyBar) {
+      imageMap = "moneyBarImageMap";
+      frame = "0";
+      canSaveDynamicFields = "1";
+      Position = "-68.617 65.000";
+      size = "48.500 14.250";
+      Layer = "14";
+      CollisionMaxIterations = "3";
+      LinkPoints = "0.043 -0.160";
+         mountID = "21";
+   };
+   new t2dTextObject(dealerScoreText) {
+      canSaveDynamicFields = "1";
+      class = "textObjectClass";
+      Position = "-45.125 -51.270";
+      size = "8.775 18.000";
+      CollisionMaxIterations = "3";
+      text = "0";
+      font = "Garamond";
+      wordWrap = "0";
+      hideOverflow = "1";
+      textAlign = "Left";
+      lineHeight = "18";
+      aspectRatio = "1";
+      lineSpacing = "0";
+      characterSpacing = "0";
+      autoSize = "1";
+      fontSizes = "40";
+      textColor = "1 1 1 1";
+         hideOverlap = "0";
+         mountID = "23";
+   };
+   new t2dTextObject() {
+      canSaveDynamicFields = "1";
+      Position = "17.628 20.203";
+      size = "0.833 10.000";
+      CollisionMaxIterations = "3";
+      font = "Arial";
+      wordWrap = "0";
+      hideOverflow = "1";
+      textAlign = "Left";
+      lineHeight = "10";
+      aspectRatio = "1";
+      lineSpacing = "0";
+      characterSpacing = "0";
+      autoSize = "1";
+      fontSizes = "40";
+      textColor = "1 1 1 1";
+         hideOverlap = "0";
+         mountID = "24";
+   };
+};

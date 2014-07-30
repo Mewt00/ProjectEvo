@@ -1,0 +1,5 @@
+<ImageAsset
+    AssetName="playerstrike"
+    ImageFile="playerstrike.png"
+    CellWidth="46"
+    CellHeight="174"  />

@@ -1,0 +1,4 @@
+<AudioAsset
+    AssetName="mainMenuMusic"
+    AssetAutoUnload="0"
+    AudioFile="mainMenuMusic.wav" />

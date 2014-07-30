@@ -1,0 +1,51 @@
+//-----------------------------------------------------------------------------
+// Torque Game Builder
+// Copyright (C) GarageGames.com, Inc.
+//-----------------------------------------------------------------------------
+
+if (!isObject(MinDistanceBehavior))
+{
+  %template = new BehaviorTemplate(MinDistanceBehavior);
+
+  %template.friendlyName = "Minimum Distance";
+  %template.behaviorType = "AI";
+  %template.description  = "Set the object to face another object";
+
+  %template.addBehaviorField(distance, "", int, 40);
+  %template.addBehaviorField(scaled, "", bool, false);
+  %template.addBehaviorField(moveSpeed, "", int, 10);
+  %template.addBehaviorField(honcho, "", bool, false);
+}
+
+function MinDistanceBehavior::onBehaviorAdd(%this)
+{
+  %this.owner.moveBehaviorCount++;
+  if(%this.owner.moveBehaviorCount == 1)
+    %this.honcho = true;
+}
+
+function MinDistanceBehavior::onUpdate(%this)
+{
+  if(%this.honcho == true){
+    %this.owner.specialX = 0;
+    %this.owner.specialY = 0;
+  }
+
+	if(!isObject(%this.owner))
+	{
+		%this.safeDelete();
+	}
+	else
+	{
+    if(VectorDist(%this.owner.getPosition(), %this.owner.mainTarget.getPosition()) < %this.distance){
+      %startVelocity = %this.owner.specialX SPC %this.owner.specialY;
+      %targetRotation = Vector2AngleToPoint (%this.owner.getPosition(), %this.owner.mainTarget.getPosition()) + 180;
+
+      %xcomponent = %this.moveSpeed * mSin(mDegToRad(%targetRotation)) / %this.owner.moveBehaviorCount;
+      %ycomponent = %this.moveSpeed * mCos(mDegToRad(%targetRotation)) / %this.owner.moveBehaviorCount;
+
+      %this.owner.specialX = getWord(%startVelocity, 0) + %xcomponent;
+      %this.owner.specialY = getWord(%startVelocity, 1) - %ycomponent;
+    }
+	}
+}

@@ -1,0 +1,10 @@
+<ModuleDefinition
+	ModuleId="PlayerModule"
+	VersionId="1"
+	Description="Player controls and stats"
+	Dependencies="AppCore"
+	Group="game"
+	ScriptFile="main.cs"
+	CreateFunction="create"
+	DestroyFunction="destroy">
+</ModuleDefinition>

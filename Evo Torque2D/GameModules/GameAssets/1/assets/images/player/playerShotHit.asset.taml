@@ -1,0 +1,7 @@
+<ImageAsset
+    AssetName="playershotHit"
+    ImageFile="playershotHitAnim.png"
+    CellCountX="4"
+    CellCountY="2"
+    CellWidth="18"
+    CellHeight="11" />

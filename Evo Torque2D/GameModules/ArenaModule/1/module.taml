@@ -1,0 +1,10 @@
+<ModuleDefinition
+	ModuleId="ArenaModule"
+	VersionId="1"
+	Description="Arena layout and objects"
+	Dependencies="AppCore"
+	Group="game"
+	ScriptFile="main.cs"
+	CreateFunction="create"
+	DestroyFunction="destroy">
+</ModuleDefinition>

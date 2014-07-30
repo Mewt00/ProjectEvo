@@ -1,0 +1,10 @@
+<ModuleDefinition
+	ModuleId="EffectsModule"
+	VersionId="1"
+	Description="Effects Parent Class"
+	Dependencies="AppCore"
+	Group="game"
+	ScriptFile="main.cs"
+	CreateFunction="create"
+	DestroyFunction="destroy">
+</ModuleDefinition>

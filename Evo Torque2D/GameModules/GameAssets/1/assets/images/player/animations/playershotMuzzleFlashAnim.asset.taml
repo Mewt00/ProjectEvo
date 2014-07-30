@@ -1,0 +1,5 @@
+<AnimationAsset
+    AssetName="playershotMuzzleFlashAnim"
+    Image="@asset=GameAssets:playershotMuzzleFlash"
+    AnimationFrames="0 1 2 3 4"
+    AnimationTime="0.2" />

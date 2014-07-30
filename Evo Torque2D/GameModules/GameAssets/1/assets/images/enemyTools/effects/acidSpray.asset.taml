@@ -1,0 +1,7 @@
+<ImageAsset
+    AssetName="acidSpray"
+    ImageFile="acidSpray.png"
+    CellCountX="4"
+    CellCountY="4"
+    CellWidth="384"
+    CellHeight="64" 	/>

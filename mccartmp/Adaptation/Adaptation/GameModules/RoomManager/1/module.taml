@@ -1,0 +1,10 @@
+<ModuleDefinition
+	ModuleId="RoomManager"
+	VersionId="1"
+	Description="Adaptive game room manager"
+	Dependencies="GameAssets,AppCore"
+	Group="game"
+	ScriptFile="main.cs"
+	CreateFunction="create"
+	DestroyFunction="destroy">
+</ModuleDefinition>

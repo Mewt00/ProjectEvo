@@ -1,0 +1,11 @@
+10			//point value limit
+
+0.20			//ranged %
+0.50			//melee %
+0.04			//block %
+0.26			//dash %
+6.25			//enemy dps melee
+2.5			//enemy dps range
+
+
+0 0 0 0 0 4 2		//enemy subChromosomes

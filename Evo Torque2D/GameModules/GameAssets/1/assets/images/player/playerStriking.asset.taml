@@ -1,0 +1,7 @@
+<ImageAsset
+    AssetName="playerStriking"
+    ImageFile="playerStrikingAnim.png"
+    CellCountX="4"
+    CellCountY="1"
+    CellWidth="320"
+    CellHeight="164" />

@@ -1,0 +1,10 @@
+<ModuleDefinition
+	ModuleId="GameAssets"
+	VersionId="1"
+	Description="Early framework assets"
+>
+		<DeclaredAssets
+			Path="assets"
+			Extension="asset.taml"
+			Recurse="true"/>
+</ModuleDefinition>

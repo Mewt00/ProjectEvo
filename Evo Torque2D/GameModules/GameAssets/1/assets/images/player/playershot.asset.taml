@@ -1,0 +1,5 @@
+<ImageAsset
+    AssetName="playershot"
+    ImageFile="playershot.png"
+    CellWidth="13"
+    CellHeight="8" 	/>

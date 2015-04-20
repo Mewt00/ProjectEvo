@@ -1,6 +1,5 @@
 //-----------------------------------------------------------------------------
-// Torque Game Builder
-// Copyright (C) GarageGames.com, Inc.
+// "Not sure if I could get this working, resorted to 8 cardinal directions instead" -Mike
 //-----------------------------------------------------------------------------
 
 if (!isObject(AlignToJoystickBehavior))

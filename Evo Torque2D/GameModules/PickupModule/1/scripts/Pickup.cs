@@ -1,5 +1,6 @@
 //-----------------------------------------------------------------------------
-// PickupModule: player class and functions
+// PickupModule:
+// "Was intended to be the parent class, but instead wound up as simply the health pickup" -Mike
 //-----------------------------------------------------------------------------
 
 function Pickup::onAdd( %this )
@@ -11,8 +12,6 @@ function Pickup::onAdd( %this )
 
 function Pickup::initialize(%this)
 {
-	//exec("./x/x.cs");
-	
 	%this.setSceneGroup(Utility.getCollisionGroup("Pickups"));
 	%this.setSceneLayer(28);
 	%this.fixedAngle = true;
@@ -66,6 +65,7 @@ function Pickup::onCollision(%this, %object, %collisionDetails)
 }
 
 //-----------------------------------------------------------------------------
+//Health (negative damage) player
 
 function Pickup::pickupAction( %this, %playerObj )
 {

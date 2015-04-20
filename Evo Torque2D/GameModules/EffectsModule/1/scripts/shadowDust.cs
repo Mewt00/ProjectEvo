@@ -1,4 +1,6 @@
-//-----------------------------------------------------------------------------\
+//-----------------------------------------------------------------------------
+// shadowDust: simple effect for when enemies spawn. covers up "flash onto screen"
+//-----------------------------------------------------------------------------
 
 function shadowDust::onAdd( %this )
 {
@@ -35,6 +37,7 @@ function shadowDust::setupSprite( %this )
 }
 
 //-----------------------------------------------------------------------------
+// fade and shrink
 
 function shadowDust::onUpdate(%this)
 {

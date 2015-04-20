@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// PlayerModule: EnemyUnit class and functions
+// Blade Tool
 //-----------------------------------------------------------------------------
 
 function ToolBlade::CreateInstance(%emyOwner, %type, %posX, %posY, %toolOrientation)  

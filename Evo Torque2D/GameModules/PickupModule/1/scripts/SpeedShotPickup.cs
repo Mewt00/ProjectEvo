@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// PickupModule: player class and functions
+// Pickup: Speed shot
 //-----------------------------------------------------------------------------
 
 function SpeedShotPickup::onAdd( %this )
@@ -66,6 +66,7 @@ function SpeedShotPickup::onCollision(%this, %object, %collisionDetails)
 }
 
 //-----------------------------------------------------------------------------
+//Temp increase on player's fire rate
 
 function SpeedShotPickup::pickupAction( %this, %playerObj )
 {

@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// Basic player controls & behaviors
+// Basic player controls & behaviors: Joystick maps to 8 keys, for 8 cardinal directions
 //-----------------------------------------------------------------------------
 
 if (!isObject(PlayerMovementControlsBehavior))

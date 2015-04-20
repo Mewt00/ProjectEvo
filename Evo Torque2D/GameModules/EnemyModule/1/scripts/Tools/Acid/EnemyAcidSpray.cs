@@ -81,7 +81,7 @@ function EnemyAcidSpray::hit(%this, %player)
 {
 	if(isObject(%player.blocker))
 	{
-		%player.blocker.takeDamage(%this.sprayDamageToShield);
+		%player.blocker.takeDamage(%this.sprayDamageToShield);		//extra damage to shields
 	}
 	else
 	{

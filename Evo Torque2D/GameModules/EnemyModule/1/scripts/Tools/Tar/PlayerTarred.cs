@@ -1,5 +1,6 @@
 //-----------------------------------------------------------------------------
-// PlayerTarred: PlayerTarred class and functions
+// Object that appears on top of player that shows they are tarred. 
+// "Might not have been used. Instead placed by a simple coloring of the player" -Mike
 //-----------------------------------------------------------------------------
 
 function PlayerTarred::onAdd( %this )

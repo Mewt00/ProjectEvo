@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// DamageSplashScreen: player class and functions
+// DamageSplashScreen: red blood splatter around screen edges
 //-----------------------------------------------------------------------------
 
 function DamageSplashScreen::onAdd( %this )
@@ -17,7 +17,7 @@ function DamageSplashScreen::initialize(%this)
 	%this.setCollisionSuppress();
 	%this.setSceneGroup( Utility.getCollisionGroup("") );
 	
-	%this.lifeSpan = %this.initDamage*15 + 100;
+	%this.lifeSpan = %this.initDamage*15 + 100;		//length of blood splat based on damages taken
 	%this.dmgSplashSchedule = schedule(%this.lifeSpan, 0, "DamageSplashScreen::damageSplashRemove", %this);
 }
 //-----------------------------------------------------------------------------
@@ -30,6 +30,7 @@ function DamageSplashScreen::setupSprite( %this )
 }
 
 //-----------------------------------------------------------------------------
+//Fade with time
 
 function DamageSplashScreen::onUpdate(%this)
 {

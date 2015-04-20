@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// Basic player aim conrols
+// Basic player aim conrols: joystick corresponds to 8 keys, for each cardinal direction
 //-----------------------------------------------------------------------------
 
 if (!isObject(PlayerAimControlsBehavior))

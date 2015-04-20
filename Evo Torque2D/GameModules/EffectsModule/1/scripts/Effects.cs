@@ -1,5 +1,6 @@
 //-----------------------------------------------------------------------------
-// PickupModule: player class and functions
+// Effects: Health pickup. a copy of Pickup.cs?
+// TODO: I believe this was a preliminary to the "PickupModule/1/scripts/Pickup.cs", most likely delete this file.
 //-----------------------------------------------------------------------------
 
 function Effects::onAdd( %this )

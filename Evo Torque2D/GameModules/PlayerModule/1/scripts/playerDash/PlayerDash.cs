@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// PlayerModule: playerBullet class and functions
+// Player Dash: speed effect behind play, deal small damage to enemies hit
 //-----------------------------------------------------------------------------
 
 function PlayerDash::onAdd( %this )

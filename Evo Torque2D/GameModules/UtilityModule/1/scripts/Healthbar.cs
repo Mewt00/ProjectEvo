@@ -47,6 +47,7 @@ function Healthbar::drawHealthbar(%this, %health)
 }
 
 //-----------------------------------------------------------------------------
+// draw with a bow in the bar (for Player)
 
 function Healthbar::drawHealthbarCurved(%this, %health, %totalHealth)
 {

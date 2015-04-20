@@ -132,6 +132,7 @@ function RoomManager::endCurrentLevel( %this )
 }
 
 //-----------------------------------------------------------------------------
+//Writes a file that is to be decoded by the evolution engine
 
 function RoomManager::writeRoomSummationFile( %this )
 {
@@ -216,7 +217,7 @@ function RoomManager::writeRoomSummationFile( %this )
 function RoomManager::runNextRoomGenAlg( %this )
 {
 	echo("RoomManager.main: GeneticAlgorithm.run()");
-	%chromosome = $genAlg.run();
+	%chromosome = $genAlg.run();			//call C++ code!
 	
 	echo("RoomManager.main: GeneticAlgorithm. run successful!");
 	

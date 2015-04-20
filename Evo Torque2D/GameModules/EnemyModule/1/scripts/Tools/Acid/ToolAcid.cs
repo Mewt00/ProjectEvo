@@ -16,7 +16,7 @@ function ToolAcid::CreateInstance(%emyOwner, %type, %posX, %posY, %toolOrientati
 		stackLevel = 1;
 		reloadTime = 2.5*1000;
 		acidDamage = 5;
-		acidDamageToShield = 20;
+		acidDamageToShield = 20;			//bonus damage to Player shield
 	};  
   
     return %r;  

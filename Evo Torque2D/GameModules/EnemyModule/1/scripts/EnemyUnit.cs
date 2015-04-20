@@ -1,5 +1,6 @@
 //-----------------------------------------------------------------------------
-// PlayerModule: EnemyUnit class and functions
+// EnemyUnit: EnemyUnit class and functions
+// Note: Tool/body construction is mostly handled in neighboring class EnemyUnitToolConfig.cs
 //-----------------------------------------------------------------------------
 
 function EnemyUnit::onAdd( %this )
@@ -13,7 +14,7 @@ function EnemyUnit::onAdd( %this )
 function EnemyUnit::initialize(%this)
 {
 	exec("./EnemyUnitToolConfig.cs");		//separate file for tool config code
-	//--Execute Nodes-----------------------
+	//--Execute Node scripts-----------------------
 	exec("./Tools/ToolNode.cs");
 	exec("./Tools/Armor/ToolArmor.cs");
 	exec("./Tools/Parry/ToolParry.cs");
@@ -22,7 +23,7 @@ function EnemyUnit::initialize(%this)
 	exec("./Tools/Blade/ToolBlade.cs");
 	exec("./Tools/Shooter/ToolShooter.cs");
 	
-  %this.setUpdateCallback(true);
+    %this.setUpdateCallback(true);
 
 	//-Stats---
 	%this.fullHealth = 100;
@@ -46,9 +47,9 @@ function EnemyUnit::initialize(%this)
 	
 	%this.sizeRatio = $pixelToWorldRatio;
 	
-  %this.moveBehaviorCount = 0;
-  %this.specialX = 0;
-  %this.specialY = 0;
+	%this.moveBehaviorCount = 0;
+	%this.specialX = 0;
+	%this.specialY = 0;
   
 	if(%this.noBehaviors != 1)
 	{
@@ -76,6 +77,7 @@ function EnemyUnit::initialize(%this)
 }
 
 //-----------------------------------------------------------------------------
+//TODO: I think you can delete this function. Ensure no one is calling it by mistake
 
 function EnemyUnit::setupSprite( %this )
 {
@@ -104,9 +106,9 @@ function EnemyUnit::setupBehaviors( %this )
 	exec("./behaviors/movement/Drift.cs");
 	exec("./behaviors/movement/wanderAround.cs");
 	exec("./behaviors/ai/faceObject.cs");
-  exec("./behaviors/movement/minDistance.cs");
-  exec("./behaviors/movement/maxDistance.cs");
-  exec("./behaviors/movement/strafe.cs");
+	exec("./behaviors/movement/minDistance.cs");
+	exec("./behaviors/movement/maxDistance.cs");
+	exec("./behaviors/movement/strafe.cs");
 	/*
 	%driftMove = DriftBehavior.createInstance();
 	%driftMove.speed = %this.walkSpeed;
@@ -125,13 +127,13 @@ function EnemyUnit::setupBehaviors( %this )
 	%faceObj.rotationOffset = 0;
 	%this.addBehavior(%faceObj);
   
-  %minDistance = MinDistanceBehavior.createInstance();
+	%minDistance = MinDistanceBehavior.createInstance();
 	%this.addBehavior(%minDistance);
   
-  %maxDistance = MaxDistanceBehavior.createInstance();
+	%maxDistance = MaxDistanceBehavior.createInstance();
 	%this.addBehavior(%maxDistance);
   
-  %strafe = StrafeBehavior.createInstance();
+	%strafe = StrafeBehavior.createInstance();
 	%this.addBehavior(%strafe);
 }
 
@@ -141,11 +143,12 @@ function EnemyUnit::onCollision(%this, %object, %collisionDetails)
 {
 	if(%object.getSceneGroup() == Utility.getCollisionGroup("Player"))
 	{
-		%object.hit(5, %this);
+		%object.hit(5, %this);			//Hit player for 5 on contact
 	}
 }
 
 //-----------------------------------------------------------------------------
+//Move at walkSpeed
 
 function EnemyUnit::onUpdate( %this )
 {
@@ -157,7 +160,7 @@ function EnemyUnit::onUpdate( %this )
 
 function EnemyUnit::takeDamage( %this, %dmgAmount, %dmgType )
 {
-	if(%dmgType $= "Ranged")
+	if(%dmgType $= "Ranged")			//check armor
 	{
 		%dmgAmount -= %this.armorValue;
 		
@@ -166,7 +169,7 @@ function EnemyUnit::takeDamage( %this, %dmgAmount, %dmgType )
 			%dmgAmount = 0;
 		}
 	}
-	else if(%dmgType $= "Melee")
+	else if(%dmgType $= "Melee")		//chance to parry
 	{
 		%rollRand = getRandom();
 		
@@ -196,7 +199,7 @@ function EnemyUnit::takeDamage( %this, %dmgAmount, %dmgType )
 
 
 //-----------------------------------------------------------------------------
-///concats and returns chromosome code
+//concats and returns chromosome code
 
 function EnemyUnit::getChromosome( %this )
 {
@@ -275,6 +278,7 @@ function EnemyUnit::onRemove( %this )
 	//echo( %this.bladeDamage );
 	//echo( %this.bladeAttackNums );
 	
+	//tally enemy unit's stats to room's
 	%this.myArena.roomShooterDamage += %this.shooterDamage;
 	%this.myArena.roomShooterShotsFired += %this.shooterShotsFired;
 	%this.myArena.roomBladeDamage += %this.bladeDamage;

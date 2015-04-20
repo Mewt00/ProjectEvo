@@ -1,6 +1,5 @@
 //-----------------------------------------------------------------------------
-// Torque Game Builder
-// Copyright (C) GarageGames.com, Inc.
+// "Early control method, probably unused" -Mike
 //-----------------------------------------------------------------------------
 
 if (!isObject(FaceMouseBehavior))

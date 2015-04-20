@@ -1,5 +1,6 @@
 //-----------------------------------------------------------------------------
-// PlayerModule: EnemyUnit class and functions
+// This is the ToolNode parent class for all specific tool types
+// Also acts as blob if not inherited from
 //-----------------------------------------------------------------------------
 
 function ToolNode::CreateInstance(%emyOwner, %type, %posX, %posY, %toolOrientation)  
@@ -11,7 +12,7 @@ function ToolNode::CreateInstance(%emyOwner, %type, %posX, %posY, %toolOrientati
 		toolType = %type;
 		bodyPosX = %posX;
 		bodyPosY = %posY;
-		orientation = %toolOrientation;
+		orientation = %toolOrientation;		//direction relative to body that its facing
 		drawSprite = true;
 		stackLevel = 1;
 	};  
@@ -140,6 +141,7 @@ function ToolNode::setupSpriteBlob( %this )
 }
 
 //-----------------------------------------------------------------------------
+// Health bonus for blob tool types
 
 function ToolNode::blobBonus( %this )
 {
@@ -172,6 +174,7 @@ function ToolNode::getAdjacentSlots( %this )
 	return %right SPC %up SPC %left SPC %down @ " ";
 }
 //-----------------------------------------------------------------------------
+//get position in the body  grid of EnemyUnit
 
 function ToolNode::getBodyPosistion( %this )
 {
@@ -179,6 +182,7 @@ function ToolNode::getBodyPosistion( %this )
 }
 
 //-----------------------------------------------------------------------------
+//get (x, y) position of the tool relative to the center of the body
 
 function ToolNode::getRelativePosistion( %this )
 {
@@ -186,6 +190,7 @@ function ToolNode::getRelativePosistion( %this )
 }
 
 //-----------------------------------------------------------------------------
+//get the exact (x, y) of the tool in the frame of the world, not related to the rest of body
 
 function ToolNode::getWorldPosistion( %this )
 {
@@ -193,6 +198,7 @@ function ToolNode::getWorldPosistion( %this )
 }
 
 //-----------------------------------------------------------------------------
+//get the exact (x, y) of the tool in the frame of the world, with (relative) offset
 
 function ToolNode::getWorldPosistion( %this, %xOffset, %yOffset )
 {
@@ -205,6 +211,7 @@ function ToolNode::getWorldPosistion( %this, %xOffset, %yOffset )
 
 //-----------------------------------------------------------------------------
 //Enter offsets as if tool is not rotated, returns rotated values according to orientation
+
 function ToolNode::getOrientatedOffset(%this, %xOffset, %yOffset)
 {
 	%x = 0;

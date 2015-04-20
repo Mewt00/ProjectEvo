@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// Room manager, sets up canvas and arena
+// Little functions to be used throughout the project like math and common groups
 //-----------------------------------------------------------------------------
 
 function Utility::create( %this )

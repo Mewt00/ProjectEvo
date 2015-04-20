@@ -34,18 +34,18 @@ function Player::initialize(%this)
 	%this.tarred = false;
 	%this.setPosition(0, 25);
 	
-	%this.myShotsContainer = new SimSet();
+	%this.myShotsContainer = new SimSet();		//tracker for shot objects on screen
 	
 	
 	%this.base_fireRate = 3;
 	%this.fireRate = %this.base_fireRate;					//per second
-	%this.fireCooldown = 1000/%this.fireRate;			//ms
+	%this.fireCooldown = 1000/%this.fireRate;				//ms
 	
-	%this.strikeRate = 2;				//per second
-	%this.strikeCooldown = 1000/%this.strikeRate;		//
+	%this.strikeRate = 2;									//per second
+	%this.strikeCooldown = 1000/%this.strikeRate;			//
 	
-	%this.blockTickRate = 2;				//per second
-	%this.blockTickTime = 1000/%this.strikeRate;		//ms
+	%this.blockTickRate = 2;								//per second
+	%this.blockTickTime = 1000/%this.strikeRate;			//ms
 	
 	//Dash
 	%this.isDashing = false;
@@ -181,12 +181,14 @@ function Player::onUpdate( %this )
 }
 
 //-----------------------------------------------------------------------------
+// receive damage
 
 function Player::hit(%this, %damage, %dmgObject)
 {
-	if(isObject(%this.blocker))
+	if(isObject(%this.blocker))			//if shield is up
 	{
-		%this.blocker.takeDamage(%damage);
+		%this.blocker.takeDamage(%damage);	//shield absorbs damage
+		//TODO: currently no damage carry over, 1 hp of shield could block 80 incoming damage
 		return 0;
 	}
 	else
@@ -196,6 +198,7 @@ function Player::hit(%this, %damage, %dmgObject)
 }
 	
 //-----------------------------------------------------------------------------
+//subtract health, check for death and kill
 
 function Player::takeDamage( %this, %dmgAmount, %dmgObject )
 {
@@ -283,6 +286,7 @@ function Player::updateFireRate( %this, %rate )
 
 
 //-----------------------------------------------------------------------------
+// Player has been defeated, end level trigger
 
 function Player::kill( %this, %murderer )
 {

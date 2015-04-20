@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// PlayerModule: EnemyUnit class and functions
+// Tar Tool
 //-----------------------------------------------------------------------------
 
 function ToolTar::CreateInstance(%emyOwner, %type, %posX, %posY, %toolOrientation)  

@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// PlayerModule: EnemyUnit class and functions
+// Shooter Tool
 //-----------------------------------------------------------------------------
 
 function ToolShooter::CreateInstance(%emyOwner, %type, %posX, %posY, %toolOrientation)  

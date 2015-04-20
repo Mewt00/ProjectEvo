@@ -1,5 +1,6 @@
 //-----------------------------------------------------------------------------
 // Basic EnemyUnit movement behavior
+//"I think these are remnants from another time that never got deleted. Remove "movement" folder" -Mike
 //-----------------------------------------------------------------------------
 
 if (!isObject(DriftBehavior))

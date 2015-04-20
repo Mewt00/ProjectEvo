@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// Basic player controls & behaviors
+// "Early input method, probably unused" -Mike
 //-----------------------------------------------------------------------------
 
 if (!isObject(PlayerMouseInputBehavior))

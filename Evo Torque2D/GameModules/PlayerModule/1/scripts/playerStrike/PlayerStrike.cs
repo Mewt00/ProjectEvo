@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// PlayerModule: playerBullet class and functions
+// PlayerSlash: hitbox and effect for melee attack
 //-----------------------------------------------------------------------------
 
 function PlayerStrike::onAdd( %this )

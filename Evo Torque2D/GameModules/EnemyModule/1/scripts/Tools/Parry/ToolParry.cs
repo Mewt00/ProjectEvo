@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// PlayerModule: EnemyUnit class and functions
+// Parry Tool
 //-----------------------------------------------------------------------------
 
 function ToolParry::CreateInstance(%emyOwner, %type, %posX, %posY, %toolOrientation)  

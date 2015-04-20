@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// PlayerModule: playerBullet class and functions
+// Player Block: Shield
 //-----------------------------------------------------------------------------
 
 function PlayerBlock::onAdd( %this )

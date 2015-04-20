@@ -1,5 +1,6 @@
 //-----------------------------------------------------------------------------
 // Basic player controls & behaviors
+//TODO: "don't quote me on this, but I think this file can be deleted..." -Mike
 //-----------------------------------------------------------------------------
 
 if (!isObject(ShooterControlsBehavior))

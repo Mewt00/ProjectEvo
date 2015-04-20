@@ -1,5 +1,7 @@
-//Separate file for tool configuration
+//This is a separate file for tool configuration
 //Same CLASS as EnemyUnit
+
+//"This is probably the hardest code to follow in all the scripts. I'll try to explain any illogical logic there is" -Mike
 
 //-----------------------------------------------------------------------------
 ///ordering: armor/parry/acid/tar/blade/shooter/blob
@@ -16,7 +18,7 @@ function EnemyUnit::configureTools(%this, %chromosome)
 	%this.toolTypeNames[3] = "Tar";
 	%this.toolTypeNames[4] = "Blade";
 	%this.toolTypeNames[5] = "Shooter";
-	%this.toolTypeNames[6] = "Blob";		//should always be last!
+	%this.toolTypeNames[6] = "Blob";		//blob should always be last!
 	
 	%this.blobToolName = %this.toolTypeNames[%this.numberToolTypes - 1];
 	
@@ -31,16 +33,19 @@ function EnemyUnit::configureTools(%this, %chromosome)
 	%this.myBodyContainer = new SimSet();
 	
 	
-	//Blobs first
+	//Build blobs first
+	//Add first blob
 	%this.myBodyContainer.add(%this.addToolNode(%this.blobToolName, "0 0"));	//0,0 is always first Blob node
 	%this.nextBlobDirection = 0;			// 0=left, 1=down, 2=right, 3=up
 	
+	//Blobs form in spiral, outwards from centre blob. This maintains relatively square blob bodies
 	for(%i = 1; %i < %this.toolTypeCounts[%this.numberToolTypes - 1]; %i++) 		
 	{
 		%nextPosition = %this.findNextBlobPosition(%this.myBodyContainer.getObject(%i - 1).getAdjacentSlots(), 0);
 		
 		%this.myBodyContainer.add(%this.addToolNode(%this.blobToolName, %nextPosition));
 	}
+	
 	
 	//Rest of Tools
 	%nextPosition = "";
@@ -50,16 +55,17 @@ function EnemyUnit::configureTools(%this, %chromosome)
 		%toolToAddTypeCounts[%i] = %this.toolTypeCounts[%i];
 	}
 	
+	//Add one tool at a time, cycling through types- ensures as many DIFFERENT tool types get spots on blobs, before they start stacking
 	%stillAddingSum = 1;
-	while(%stillAddingSum > 0)
+	while(%stillAddingSum > 0)			//continue while tool has been added in the last loop
 	{
 		%stillAddingSum = 0;
 		
-		for(%i = 0; %i < %this.numberToolTypes - 1; %i++)
+		for(%i = 0; %i < %this.numberToolTypes - 1; %i++)		//cycle types
 		{
 			%stillAddingSum = %stillAddingSum + %this.configureSingleTool(%this.toolTypeNames[%i], %toolToAddTypeCounts[%i]);
 			
-			%toolToAddTypeCounts[%i] = (%toolToAddTypeCounts[%i] - 1);
+			%toolToAddTypeCounts[%i] = (%toolToAddTypeCounts[%i] - 1);		//increment left toAdd count down
 		}
 	}
 	
@@ -71,6 +77,7 @@ function EnemyUnit::configureTools(%this, %chromosome)
 }
 
 //-----------------------------------------------------------------------------
+// TODO: would probably put %toAddCount check outside of function, where it is being called. No need/awkward to be inside
 
 function EnemyUnit::configureSingleTool( %this, %toolType, %toAddCount )
 {
@@ -82,23 +89,24 @@ function EnemyUnit::configureSingleTool( %this, %toolType, %toAddCount )
 	{
 		%allPositions = "";
 		
+		//get all slots adjacent to blobs
 		for(%j = 0; %j < %this.myBodyContainer.getCount(); %j++)
 		{
 			%allPositions = %allPositions @ %this.myBodyContainer.getObject(%j).getAdjacentSlots();
 		}
 		
-		
+		//look through all adjacent slots for any not taken already
 		%nextPosition = %this.findOpenSlot(%allPositions);
-		
-		if(%nextPosition $= "x")
+	
+		if(%nextPosition $= "x")		//if all slots are taken, start stacking
 		{
 			%nextPosition = %this.findSameTypeSlot(%allPositions, %toolType, -1);
 			
 			%this.stackToolNode(%nextPosition, 1);
 		}
-		else
+		else							//NOT ENOUGH BLOBS: add on an illegal spot. Should not have to happen
 		{
-			%nextNode = %this.addToolNode(%toolType, %nextPosition);
+			%nextNode = %this.addToolNode(%toolType, %nextPosition);		//e.g.: 5 tool types, 1 blob
 			%this.myBodyContainer.add(%nextNode);
 		}
 		
@@ -111,11 +119,11 @@ function EnemyUnit::configureSingleTool( %this, %toolType, %toAddCount )
 
 function EnemyUnit::findOpenSlot( %this, %positions)			
 {
-	for(%i = 0; %i < mFloor(getWordCount(%positions)/2); %i++)
+	for(%i = 0; %i < mFloor(getWordCount(%positions)/2); %i++)		//position is a string of points. 2 words = 1 position e.g.: "2 1 5 4" = {{2, 1}, {5, 4}}
 	{
 		%currPosition = getWord(%positions, %i*2) SPC getWord(%positions, %i*2 + 1);			//get position 
 		
-		if(!isObject(%this.myBody[getWord(%currPosition, 0), getWord(%currPosition, 1)]))
+		if(!isObject(%this.myBody[getWord(%currPosition, 0), getWord(%currPosition, 1)]))		//if no object at slot
 		{
 			return %currPosition;
 		}
@@ -125,41 +133,44 @@ function EnemyUnit::findOpenSlot( %this, %positions)
 }
 
 //-----------------------------------------------------------------------------
-///finds a existing slot that is occupied by the same tool Type
+///finds a existing slot that is occupied by the same tool Type.
+///recursive function.
 
-function EnemyUnit::findSameTypeSlot( %this, %positions, %toolType, %lowestStackLevel)			
+function EnemyUnit::findSameTypeSlot( %this, %positions, %toolType, %lowestStackLevel)			//	%lowestStackLevel is initiated at -1 for first call
 {
 	%result = "0 0";
 	
-	if(getWordCount(%positions) == 0)
+	if(getWordCount(%positions) == 0)							//no possible slots left, findOpenSlot() function eliminated all options
 	{
 		return "x";
 	}
 	
-	for(%i = 0; %i < getWordCount(%positions) - 1; %i += 2)
+	for(%i = 0; %i < getWordCount(%positions) - 1; %i += 2)		//position is a string of points. 2 words = 1 position e.g.: "2 1 5 4" = {{2, 1}, {5, 4}}
 	{
 		%currPosition = getWord(%positions, %i) SPC getWord(%positions, %i + 1);			//get position 
 		
 		%currToolNode = (%this.myBody[getWord(%currPosition, 0), getWord(%currPosition, 1)]);
 		
-		if(%currToolNode.toolType $= %toolType)
+		if(%currToolNode.toolType $= %toolType)					//if same tool type
 		{
-			%currStackLevel = %currToolNode.stackLevel;
+			%currStackLevel = %currToolNode.stackLevel;			//%lowestStackLevel is variable to ensure the to-add tool is stacked onto the set with the least stacked tools. (least first)
 			
-			if(%currStackLevel < %lowestStackLevel)
+			if(%currStackLevel < %lowestStackLevel)				
 			{
-				return %currPosition;
+				return %currPosition;							//stack level is less than previous stack observed, suitable to add tool to
 			}
 			else
 			{
-				%posistionsMinusCurr = removeWord(%positions, 0);
-				%posistionsMinusCurr = removeWord(%posistionsMinusCurr, 0);
+				//copy positions string without first position
+				%posistionsMinusCurr = removeWord(%positions, 0);				
+				%posistionsMinusCurr = removeWord(%posistionsMinusCurr, 0);		
 				
+				//recursively call findSameTypeSlot()
 				%nexToolPos = %this.findSameTypeSlot(%posistionsMinusCurr, %toolType, %currStackLevel);
 				
 				if(%lowestStackLevel == -1)		//first call
 				{
-					if(%nexToolPos $= "x")		//all equal
+					if(%nexToolPos $= "x")		//all equal stack levels
 					{
 						return %currPosition;
 					}
@@ -170,13 +181,16 @@ function EnemyUnit::findSameTypeSlot( %this, %positions, %toolType, %lowestStack
 		}
 	}
 	
-	return %result;		// no like slots found
+	return %result;								// no like-type slots found
 }
 
 //-----------------------------------------------------------------------------
+
 function EnemyUnit::initiateTools( %this )
 {
 	%this.orderTools();
+	
+	//initiate body tools from back to front of list
 	for(%j = %this.myBodyContainer.getCount() - 1; %j >= 0; %j--)
 	{
 		%this.myBodyContainer.getObject(%j).initialize();
@@ -184,6 +198,8 @@ function EnemyUnit::initiateTools( %this )
 }
 
 //-----------------------------------------------------------------------------
+///"I believe this is an unused function" -Mike
+///TODO: ensure function is unused and delete it
 
 function EnemyUnit::sortTools( %this )
 {
@@ -207,6 +223,7 @@ function EnemyUnit::sortTools( %this )
 }
 
 //-----------------------------------------------------------------------------
+///bring armor objects to front of list to ensure they are drawn on top of everything
 
 function EnemyUnit::orderTools( %this )
 {
@@ -220,7 +237,7 @@ function EnemyUnit::orderTools( %this )
 }
 
 //-----------------------------------------------------------------------------
-///call this to add tools to body. ensures toolNode is tracked in grid
+///call this to add tools to body. ensures toolNode is tracked in body-grid
 
 function EnemyUnit::addToolNode( %this, %type, %position)
 {
@@ -228,9 +245,10 @@ function EnemyUnit::addToolNode( %this, %type, %position)
 	%yPos = getWord(%position, 1);
 
 	%tool = %this.createToolNode(%type, %xPos, %yPos);
+	
 	%this.addToGrid(%tool);
 	
-	//track body size
+	//track body size										//quick, useful number to know rough radius of enemy unit
 	if(mAbs(%xPos) > %this.maxBodySize)
 		%this.maxBodySize = mAbs(%xPos);
 		
@@ -241,17 +259,18 @@ function EnemyUnit::addToolNode( %this, %type, %position)
 }
 
 //-----------------------------------------------------------------------------
-///call this to add tools to body. ensures toolNode is tracked in grid
+///call this to add tools to body if only stack spots are available
 
 function EnemyUnit::stackToolNode( %this, %position, %stackCount)
 {
 	%xPos = getWord(%position, 0);
 	%yPos = getWord(%position, 1);
 	
-	%this.myBody[%xPos, %yPos].stackLevel = (%this.myBody[%xPos, %yPos].stackLevel + %stackCount);
+	%this.myBody[%xPos, %yPos].stackLevel = (%this.myBody[%xPos, %yPos].stackLevel + %stackCount);			//increment stack level
 }
 
 //-----------------------------------------------------------------------------
+///add tool object to the body grid
 
 function EnemyUnit::addToGrid( %this, %tool)
 {
@@ -260,6 +279,7 @@ function EnemyUnit::addToGrid( %this, %tool)
 
 //-----------------------------------------------------------------------------
 ///should only be called through addToolNode(...)
+///Checks tool type and returns a new instance of tool of said type
 
 function EnemyUnit::createToolNode( %this, %type, %posX, %posY)
 {	
@@ -282,13 +302,14 @@ function EnemyUnit::createToolNode( %this, %type, %posX, %posY)
 		%nextTool = ToolShooter::CreateInstance(%this, %type, %posX, %posY, %this.findToolOrientation(%posX, %posY));
 	}
 	else{
-		%nextTool = ToolNode::CreateInstance(%this, %type, %posX, %posY, %this.findToolOrientation(%posX, %posY));
+		%nextTool = ToolNode::CreateInstance(%this, %type, %posX, %posY, %this.findToolOrientation(%posX, %posY));		//catch all. might not behave correctly
 	}
 	
 	return %nextTool;
 }
 
 //-----------------------------------------------------------------------------
+///determine what direction a blob is to attach the base of the tool. (so shooters/blades/etc face logical direction)
 
 function EnemyUnit::findToolOrientation( %this, %posX, %posY)
 {
@@ -316,48 +337,53 @@ function EnemyUnit::findToolOrientation( %this, %posX, %posY)
 }
 
 //-----------------------------------------------------------------------------
-///finds free body coordinate to add blob to (%positions is all possible positions in which to place new tool)
+///finds free body-adjacent coordinate to add blob to (%positions is all empty positions in which to place new blob)
 ///works in outward spiral. e.g: starting at A then B then C...
 ///      J I H G .
 ///      K B A F .
 ///      L C D E .
 ///      M N O P Q
 
-function EnemyUnit::findNextBlobPosition( %this, %positions, %bootstrap )			
+function EnemyUnit::findNextBlobPosition( %this, %positions, %bootstrap )				//%positions is 4 adjacent spots to previously placed blob		
 {
-	%bootstrap++;
+	%bootstrap++;			//recursion should only ever need to check 2, but 4 is max possible if method is changed
 	if(%bootstrap >= 4)
-		return "0 0";		// "0 0" reserved for first Blob tool node added, so this means no viable positions found
+		return "0 0";		// "0 0" reserved for first Blob tool node added, so this means no viable positions found (should not be reached in code)
 	
-	for(%i = 0; %i < getWordCount(%positions) - 1; %i += 2)
+	for(%i = 0; %i < getWordCount(%positions) - 1; %i += 2)		// %positions is a string of points. 2 words = 1 position e.g.: "2 1 5 4" = {{2, 1}, {5, 4}}
 	{
-		if((%i/2) == %this.nextBlobDirection)
+		if((%i/2) == %this.nextBlobDirection)					//check in direction of nextBlobDirection, ignore all others
 		{
 			%currPosition = getWord(%positions, %i) SPC getWord(%positions, %i + 1);
 			
-			
-			if(!isObject(%this.myBody[getWord(%currPosition, 0), getWord(%currPosition, 1)]))
+			if(!isObject(%this.myBody[getWord(%currPosition, 0), getWord(%currPosition, 1)]))		//if slot is open
 			{
-				%this.nextBlobDirection++;
+				%this.nextBlobDirection++;															// turn nextBlobDirection counter-clockwise for next blob
 				if(%this.nextBlobDirection > 3)
 					%this.nextBlobDirection = 0;
 					
-				return %currPosition;
+				return %currPosition;																// return open position
 			}
-			else
+			else																					//if slot is blocked
 			{				
-				%this.nextBlobDirection--;
+				%this.nextBlobDirection--;															// turn nextBlobDirection back, clockwise in order to try again
 				if(%this.nextBlobDirection < 0)
 					%this.nextBlobDirection = 3;	
 					
-				return %this.findNextBlobPosition( %positions, %bootstrap);		//recursive search for position
+				return %this.findNextBlobPosition( %positions, %bootstrap);							// try again recursively, with new nextBlobDirection
+																									// this method ensures that the blobs are formed in tight spirals and is continuously trying to turn into the center and turns back to straight if it is not rounding a corner.
 			}
 		}
 	}
 }
 
 //-----------------------------------------------------------------------------
-///finds free body coordinate to add toolNode to (%positions is all possible positions in which to place new tool)
+///This function was developed in an attempt to change the sprite of clusters of Blobs into one big blob.
+///    So four little blobs in a 2x2 arrangement, would be replaced by one big blob image- drawn to be bigger
+///    This would add variety to the bodies but the idea was never finished.
+
+///"I believe this is an unused function" -Mike
+///TODO: ensure function is unused and delete it
 
 function EnemyUnit::checkLargeBodyBlobs( %this )			
 {
@@ -384,7 +410,8 @@ function EnemyUnit::checkLargeBodyBlobs( %this )
 }
 
 //-----------------------------------------------------------------------------
-///finds free body coordinate to add toolNode to (%positions is all possible positions in which to place new tool)
+///"I believe this is an unused function (besides in checkLargeBodyBlobs())" -Mike
+///TODO: ensure function is unused and delete it
 
 function EnemyUnit::blobSearch2x2( %this, %rootBlob )			
 {
@@ -437,6 +464,7 @@ function EnemyUnit::blobSearch2x2( %this, %rootBlob )
 }
 
 //-----------------------------------------------------------------------------
+///Prints a text layout of the body to the console. Useful for seeing enemy make ups.
 
 function EnemyUnit::echoBodyLayout( %this)
 {

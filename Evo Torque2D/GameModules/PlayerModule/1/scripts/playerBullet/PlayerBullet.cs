@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// PlayerModule: playerBullet class and functions
+// Player bullet/shot
 //-----------------------------------------------------------------------------
 
 function PlayerBullet::onAdd( %this )

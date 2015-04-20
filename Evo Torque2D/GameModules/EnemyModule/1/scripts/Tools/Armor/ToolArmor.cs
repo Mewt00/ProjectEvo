@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// PlayerModule: EnemyUnit class and functions
+// Armor Tool
 //-----------------------------------------------------------------------------
 
 function ToolArmor::CreateInstance(%emyOwner, %type, %posX, %posY, %toolOrientation)  

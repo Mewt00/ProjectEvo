@@ -40,7 +40,7 @@ function MaxDistanceBehavior::onUpdate(%this)
 	{
     if(VectorDist(%this.owner.getPosition(), %this.owner.mainTarget.getPosition()) > %this.distance){
       %startVelocity = %this.owner.specialX SPC %this.owner.specialY;
-      %targetRotation = Vector2AngleToPoint (%this.owner.getPosition(), %this.owner.mainTarget.getPosition());
+      %targetRotation = Vector2AngleToPoint (%this.owner.getPosition(), %this.owner.mainTarget.getPosition());//TODO?
       
       %xcomponent = %this.moveSpeed * mSin(mDegToRad(%targetRotation)) / %this.owner.moveBehaviorCount;
       %ycomponent = %this.moveSpeed * mCos(mDegToRad(%targetRotation)) / %this.owner.moveBehaviorCount;

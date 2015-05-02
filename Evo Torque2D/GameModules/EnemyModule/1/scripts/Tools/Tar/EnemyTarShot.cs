@@ -25,7 +25,7 @@ function EnemyTarShot::initialize(%this)
 	
 	%this.setupSprite();
 		
-	%this.setLinearVelocityPolar(%this.fireAngle+90, %this.shotSpeed);		//0 degrees is down
+	%this.setLinearVelocityPolar(%this.fireAngle, %this.shotSpeed);		//0 degrees is down
 	
     %this.setUpdateCallback(true);
 	

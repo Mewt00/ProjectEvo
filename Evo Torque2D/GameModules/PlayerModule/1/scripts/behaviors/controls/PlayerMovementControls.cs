@@ -5,48 +5,82 @@
 if (!isObject(PlayerMovementControlsBehavior))
 {
     %template = new BehaviorTemplate(PlayerMovementControlsBehavior);
+	
+	echo("ActionMap1:");
+	echo(isObject(controlActionMap));
+	
+	if(isObject(controlActionMap))
+	{
+		controlActionMap.pop();
+		controlActionMap.delete();
+	}
+	
+	echo("ActionMap2:");
+	echo(isObject(controlActionMap));
+	
+	new ActionMap(controlActionMap);
+	
+	echo("ActionMap3:");
+	echo(isObject(controlActionMap));
 
 	%template.friendlyName = "Shooter Controls";
 	%template.behaviorType = "Input";
 	%template.description  = "Shooter style movement control";
 
-	%template.addBehaviorField(upKey, "Key to bind to upward movement", keybind, "keyboard up");
-	%template.addBehaviorField(downKey, "Key to bind to downward movement", keybind, "keyboard down");
-	%template.addBehaviorField(leftKey, "Key to bind to left movement", keybind, "keyboard left");
-	%template.addBehaviorField(rightKey, "Key to bind to right movement", keybind, "keyboard right");
+	%template.addBehaviorField(upKey, "Key to bind to upward movement", keybind, "keyboard W");
+	%template.addBehaviorField(downKey, "Key to bind to downward movement", keybind, "keyboard S");
+	%template.addBehaviorField(leftKey, "Key to bind to left movement", keybind, "keyboard A");
+	%template.addBehaviorField(rightKey, "Key to bind to right movement", keybind, "keyboard D");
 	
-	%template.addBehaviorField(upRightKey, "Key to bind to upward movement", keybind, "keyboard U");	//diagonal (for joy to key)
-	%template.addBehaviorField(upLeftKey, "Key to bind to downward movement", keybind, "keyboard Y");
-	%template.addBehaviorField(downLeftKey, "Key to bind to left movement", keybind, "keyboard B");
-	%template.addBehaviorField(downRightKey, "Key to bind to right movement", keybind, "keyboard N");
+	%template.addBehaviorField(upRightKey, "Key to bind for up-right movement", keybind, "keyboard U");	//diagonal (for joy to key)
+	%template.addBehaviorField(upLeftKey, "Key to bind to up-left movement", keybind, "keyboard Y");
+	%template.addBehaviorField(downLeftKey, "Key to bind to down-left movement", keybind, "keyboard B");
+	%template.addBehaviorField(downRightKey, "Key to bind to down-right movement", keybind, "keyboard N");
 
 	%template.addBehaviorField(fireKey, "", keybind, "keyboard space");
 	%template.addBehaviorField(meleeKey, "", keybind, "keyboard E");
 	%template.addBehaviorField(dashKey, "", keybind, "keyboard Q");
 	%template.addBehaviorField(blockKey, "", keybind, "keyboard F");
+	
+	controlActionMap.push();
 }
 
 //------------------------------------------------------------------------------------
 
 function PlayerMovementControlsBehavior::onBehaviorAdd(%this)
 {
-    if (!isObject(GlobalActionMap))
+	echo("ActionMap:");
+	echo(isObject(controlActionMap));
+    if (!isObject(controlActionMap))
        return;
 
-	GlobalActionMap.bindObj(getWord(%this.upKey, 0), getWord(%this.upKey, 1), "moveUp", %this);
-	GlobalActionMap.bindObj(getWord(%this.downKey, 0), getWord(%this.downKey, 1), "moveDown", %this);
-	GlobalActionMap.bindObj(getWord(%this.leftKey, 0), getWord(%this.leftKey, 1), "moveLeft", %this);
-	GlobalActionMap.bindObj(getWord(%this.rightKey, 0), getWord(%this.rightKey, 1), "moveRight", %this);
+	controlActionMap.bindObj(getWord(%this.upKey, 0), getWord(%this.upKey, 1), "moveUp", %this);
+	echo("echo here");
+	echo(getWord(%this.upKey, 0));
+	echo(getWord(%this.upKey, 1));
+	controlActionMap.bindObj(getWord(%this.downKey, 0), getWord(%this.downKey, 1), "moveDown", %this);
+	controlActionMap.bindObj(getWord(%this.leftKey, 0), getWord(%this.leftKey, 1), "moveLeft", %this);
+	controlActionMap.bindObj(getWord(%this.rightKey, 0), getWord(%this.rightKey, 1), "moveRight", %this);
 	
-	GlobalActionMap.bindObj(getWord(%this.upRightKey, 0), getWord(%this.upRightKey, 1), "moveUpRight", %this);
-	GlobalActionMap.bindObj(getWord(%this.upLeftKey, 0), getWord(%this.upLeftKey, 1), "moveUpLeft", %this);
-	GlobalActionMap.bindObj(getWord(%this.downLeftKey, 0), getWord(%this.downLeftKey, 1), "moveDownLeft", %this);
-	GlobalActionMap.bindObj(getWord(%this.downRightKey, 0), getWord(%this.downRightKey, 1), "moveDownRight", %this);
+	controlActionMap.bindObj(getWord(%this.upRightKey, 0), getWord(%this.upRightKey, 1), "moveUpRight", %this);
+	controlActionMap.bindObj(getWord(%this.upLeftKey, 0), getWord(%this.upLeftKey, 1), "moveUpLeft", %this);
+	controlActionMap.bindObj(getWord(%this.downLeftKey, 0), getWord(%this.downLeftKey, 1), "moveDownLeft", %this);
+	controlActionMap.bindObj(getWord(%this.downRightKey, 0), getWord(%this.downRightKey, 1), "moveDownRight", %this);
 
-	GlobalActionMap.bindObj("keyboard", %this.fireKey, "pressFire", %this);
-	GlobalActionMap.bindObj("keyboard", %this.meleeKey, "pressMelee", %this);
-	GlobalActionMap.bindObj("keyboard", %this.dashKey, "pressDash", %this);
-	GlobalActionMap.bindObj("keyboard", %this.blockKey, "pressBlock", %this);
+	controlActionMap.bindObj("keyboard", %this.fireKey, "pressFire", %this);
+	controlActionMap.bindObj("keyboard", %this.meleeKey, "pressMelee", %this);
+	controlActionMap.bindObj("keyboard", %this.dashKey, "pressDash", %this);
+	controlActionMap.bindObj("keyboard", %this.blockKey, "pressBlock", %this);
+	
+	//Xbox XInput mapping
+	controlActionMap.bindObj("gamepad0", "thumblx", "LAnalogX", %this);
+	controlActionMap.bindObj("gamepad0", "thumbly", "LAnalogY", %this);
+	/*controlActionMap.bindObj("gamepad0", getWord(%this.downKey, 1), "moveDown", %this);
+	controlActionMap.bindObj("gamepad0", getWord(%this.leftKey, 1), "moveLeft", %this);
+	controlActionMap.bindObj("gamepad0", getWord(%this.rightKey, 1), "moveRight", %this);*/
+	
+		
+	controlActionMap.bindObj("gamepad0", "triggerr", "pressFire", %this);
 
 	%this.up = 0;
 	%this.down = 0;
@@ -57,6 +91,7 @@ function PlayerMovementControlsBehavior::onBehaviorAdd(%this)
 	%this.upLeft = 0;
 	%this.downLeft = 0;
 	%this.downRight = 0;
+	
 	
    // %this.setUpdateCallback(true);
 	
@@ -117,25 +152,27 @@ function PlayerMovementControlsBehavior::onBehaviorAdd(%this)
 
 function PlayerMovementControlsBehavior::onBehaviorRemove(%this)
 {
-    if (!isObject(GlobalActionMap))
+    if (!isObject(controlActionMap))
        return;
 
 	//%this.owner.setUpdateCallback(true);
-
-	GlobalActionMap.unbindObj(getWord(%this.upKey, 0), getWord(%this.upKey, 1), %this);
-	GlobalActionMap.unbindObj(getWord(%this.downKey, 0), getWord(%this.downKey, 1), %this);
-	GlobalActionMap.unbindObj(getWord(%this.leftKey, 0), getWord(%this.leftKey, 1), %this);
-	GlobalActionMap.unbindObj(getWord(%this.rightKey, 0), getWord(%this.rightKey, 1), %this);
 	
-	GlobalActionMap.unbindObj(getWord(%this.upRightKey, 0), getWord(%this.upRightKey, 1), %this);
-	GlobalActionMap.unbindObj(getWord(%this.upLeftKey, 0), getWord(%this.upLeftKey, 1), %this);
-	GlobalActionMap.unbindObj(getWord(%this.downLeftKey, 0), getWord(%this.downLeftKey, 1), %this);
-	GlobalActionMap.unbindObj(getWord(%this.downRightKey, 0), getWord(%this.downRightKey, 1), %this);
+	//TODO::Are the Unbindings needed?
 
-	GlobalActionMap.unbindObj("keyboard", %this.fireKey, %this);
-	GlobalActionMap.unbindObj("keyboard", %this.meleeKey, %this);
-	GlobalActionMap.unbindObj("keyboard", %this.dashKey, %this);
-	GlobalActionMap.unbindObj("keyboard", %this.blockKey, %this);
+	controlActionMap.unbindObj(getWord(%this.upKey, 0), getWord(%this.upKey, 1), %this);
+	controlActionMap.unbindObj(getWord(%this.downKey, 0), getWord(%this.downKey, 1), %this);
+	controlActionMap.unbindObj(getWord(%this.leftKey, 0), getWord(%this.leftKey, 1), %this);
+	controlActionMap.unbindObj(getWord(%this.rightKey, 0), getWord(%this.rightKey, 1), %this);
+	
+	controlActionMap.unbindObj(getWord(%this.upRightKey, 0), getWord(%this.upRightKey, 1), %this);
+	controlActionMap.unbindObj(getWord(%this.upLeftKey, 0), getWord(%this.upLeftKey, 1), %this);
+	controlActionMap.unbindObj(getWord(%this.downLeftKey, 0), getWord(%this.downLeftKey, 1), %this);
+	controlActionMap.unbindObj(getWord(%this.downRightKey, 0), getWord(%this.downRightKey, 1), %this);
+
+	controlActionMap.unbindObj("keyboard", %this.fireKey, %this);
+	controlActionMap.unbindObj("keyboard", %this.meleeKey, %this);
+	controlActionMap.unbindObj("keyboard", %this.dashKey, %this);
+	controlActionMap.unbindObj("keyboard", %this.blockKey, %this);
 
 	%this.up = 0;
 	%this.down = 0;
@@ -266,6 +303,29 @@ function PlayerMovementControlsBehavior::moveDown(%this, %val)
 
 //------------------------------------------------------------------------------------
 
+function PlayerMovementControlsBehavior::LAnalogY(%this, %val)
+{
+	//echo("Left analog stick --> up/down" @ %val);
+	if(%val < -0.25)
+	{
+		%this.down = 1;
+		//%this.up = 0;
+	}
+	else if(%val > 0.25)
+	{
+		%this.up = 1;	
+		//%this.down = 0;
+	}
+	else
+	{
+		%this.up = 0;	
+		%this.down = 0;
+	}
+	
+}
+
+//------------------------------------------------------------------------------------
+
 function PlayerMovementControlsBehavior::moveLeft(%this, %val)
 {
     if(%val == 1)
@@ -290,6 +350,29 @@ function PlayerMovementControlsBehavior::moveRight(%this, %val)
 	{
 		%this.right = 0;
 	}
+}
+
+//------------------------------------------------------------------------------------
+
+function PlayerMovementControlsBehavior::LAnalogX(%this, %val)
+{
+	//echo("Left analog stick --> right/left" @ %val);
+	if(%val < -0.25)
+	{
+		%this.left = 1;
+		//%this.right = 0;
+	}
+	else if(%val > 0.25)
+	{
+		%this.right = 1;
+		//%this.left = 0;		
+	}
+	else
+	{
+		%this.right = 0;	
+		%this.left = 0;
+	}
+	
 }
 
 //------------------------------------------------------------------------------------
@@ -456,7 +539,7 @@ function PlayerMovementControlsBehavior::pressDash(%this, %val)
 			
 			%this.owner.isDashing = true;
 			%this.owner.currDashDirection = %this.owner.getAngle();
-			%this.owner.setLinearVelocityPolar(%this.owner.getAngle() + 90, %this.owner.dashSpeed);	
+			%this.owner.setLinearVelocityPolar(%this.owner.getAngle(), %this.owner.dashSpeed);	
 			
 			%this.dashSchedule = schedule(%this.owner.dashLength, 0, "PlayerMovementControlsBehavior::endDash", %this);
 			

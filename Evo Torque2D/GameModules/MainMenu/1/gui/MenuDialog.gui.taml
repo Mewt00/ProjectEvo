@@ -1,0 +1,51 @@
+<GuiSpriteCtrl
+    Name="MenuDialog"
+    Profile="GuiToolboxProfile"
+    HorizSizing="relative"
+    VertSizing="relative"
+    Position="0 0"
+    Extent="1024 768"
+    MinExtent="320 320"
+    Visible="1"
+    Image="@asset=GameAssets:menu_titleScreenBkgrd">
+	
+    <!-- New Game-->
+    <GuiButtonCtrl
+        Name="NewGameButton"
+        Profile="BlueButtonProfile"
+        Text="New Game"
+        ButtonType="PushButton"
+        canSaveDynamicFields="0"
+        isContainer="0"
+        HorizSizing="relative"
+        VertSizing="relative"
+        Position="412 369"
+        Extent="200 30"
+        MinExtent="100 15"
+        canSave="1"
+        Visible="1"
+        Active="1"
+        hovertime="1000"
+        groupNum="-1"
+        useMouseEvents="1" />
+
+    <!-- Quit Game-->
+    <GuiButtonCtrl
+        Name="QuitButton"
+        Profile="BlueButtonProfile"
+        Text="Quit Game"
+        ButtonType="PushButton"
+        canSaveDynamicFields="0"
+        isContainer="0"
+        HorizSizing="relative"
+        VertSizing="relative"
+        Position="412 399"
+        Extent="200 30"
+        MinExtent="100 15"
+        canSave="1"
+        Visible="1"
+        Active="1"
+        hovertime="1000"
+        groupNum="-1"
+        useMouseEvents="1" />
+</GuiSpriteCtrl>

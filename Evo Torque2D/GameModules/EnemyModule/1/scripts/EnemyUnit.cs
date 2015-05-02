@@ -127,14 +127,14 @@ function EnemyUnit::setupBehaviors( %this )
 	%faceObj.rotationOffset = 0;
 	%this.addBehavior(%faceObj);
   
-	%minDistance = MinDistanceBehavior.createInstance();
-	%this.addBehavior(%minDistance);
+	//%minDistance = MinDistanceBehavior.createInstance();
+	//%this.addBehavior(%minDistance);
   
-	%maxDistance = MaxDistanceBehavior.createInstance();
-	%this.addBehavior(%maxDistance);
+	//%maxDistance = MaxDistanceBehavior.createInstance();
+	//%this.addBehavior(%maxDistance);
   
-	%strafe = StrafeBehavior.createInstance();
-	%this.addBehavior(%strafe);
+	//%strafe = StrafeBehavior.createInstance();
+	//%this.addBehavior(%strafe);
 }
 
 //-----------------------------------------------------------------------------

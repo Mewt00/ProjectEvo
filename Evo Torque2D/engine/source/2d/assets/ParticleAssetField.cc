@@ -23,7 +23,7 @@
 #include "2d/assets/ParticleAssetField.h"
 
 #ifndef _CORE_MATH_H_
-#include "2d/core/coreMath.h"
+#include "2d/core/CoreMath.h"
 #endif
 
 #ifndef _MMATH_H_
@@ -543,7 +543,7 @@ void ParticleAssetField::onTamlCustomWrite( TamlCustomNode* pCustomNode )
         const DataKey& dataKey = mDataKeys[index];
 
         // Add a key node.
-        TamlCustomNode* pKeyNode = pCustomNode->addNode( particleAssetFieldDataKeyName );
+        TamlCustomNode* pKeyNode = pAssetField->addNode( particleAssetFieldDataKeyName );
 
         // Add key fields.
         pKeyNode->addField( particleAssetFieldDataKeyTimeName, dataKey.mTime );
@@ -670,8 +670,21 @@ void ParticleAssetField::onTamlCustomRead( const TamlCustomNode* pCustomNode )
         keys.push_back( key );
     }
 
-    // Set the value bounds.
-    setValueBounds( maxTime, minValue, maxValue, defaultValue );
+    // If value bounds are present but no keys, assign the field its default values.
+    if ( !keys.size() )
+    {
+        DataKey key;
+        key.mTime = getMinTime();
+        key.mValue = getDefaultValue();
+        keys.push_back( key );
+    }
+
+    // Did we read in any value bounds?
+    if ( mValueBoundsDirty )
+    {
+        // Set the value bounds.
+        setValueBounds( maxTime, minValue, maxValue, defaultValue );
+    }
 
     // Set the value scale.
     setValueScale( valueScale );

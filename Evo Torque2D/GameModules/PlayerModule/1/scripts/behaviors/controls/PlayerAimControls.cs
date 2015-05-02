@@ -11,9 +11,9 @@ if (!isObject(PlayerAimControlsBehavior))
   %template.description  = "Shooter style aiming control";
 
   %template.addBehaviorField(upKey, "", keybind, "keyboard up");
-  %template.addBehaviorField(dwnKey, "", keybind, "keyboard down");
-  %template.addBehaviorField(lftKey, "", keybind, "keyboard left");
-  %template.addBehaviorField(rgtKey, "", keybind, "keyboard right");
+  %template.addBehaviorField(downKey, "", keybind, "keyboard down");
+  %template.addBehaviorField(leftKey, "", keybind, "keyboard left");
+  %template.addBehaviorField(rightKey, "", keybind, "keyboard right");
   
   %template.addBehaviorField(ulKey, "", keybind, "keyboard I");
   %template.addBehaviorField(urKey, "", keybind, "keyboard O");
@@ -27,16 +27,16 @@ function PlayerAimControlsBehavior::onBehaviorAdd(%this)
        return;
 	   
 	//cardinal
-    GlobalActionMap.bindObj("keyboard", %this.upKey, "faceUp", %this);
-    GlobalActionMap.bindObj("keyboard", %this.rgtKey, "faceRight", %this);
-    GlobalActionMap.bindObj("keyboard", %this.dwnKey, "faceDown", %this);
-    GlobalActionMap.bindObj("keyboard", %this.lftKey, "faceLeft", %this);
+    GlobalActionMap.bindObj(getWord(%this.upKey, 0), getWord(%this.upKey, 1), "faceUp", %this);
+    GlobalActionMap.bindObj(getWord(%this.rightKey, 0), getWord(%this.rightKey, 1), "faceRight", %this);
+    GlobalActionMap.bindObj(getWord(%this.downKey, 0), getWord(%this.downKey, 1), "faceDown", %this);
+    GlobalActionMap.bindObj(getWord(%this.leftKey, 0), getWord(%this.leftKey, 1), "faceLeft", %this);
 	
 	//diagonal
-    GlobalActionMap.bindObj("keyboard", %this.ulKey, "faceUL", %this);
-    GlobalActionMap.bindObj("keyboard", %this.urKey, "faceUR", %this);
-    GlobalActionMap.bindObj("keyboard", %this.drKey, "faceDR", %this);
-    GlobalActionMap.bindObj("keyboard", %this.dlKey, "faceDL", %this);
+    GlobalActionMap.bindObj(getWord(%this.ulKey, 0), getWord(%this.ulKey, 1), "faceUL", %this);
+    GlobalActionMap.bindObj(getWord(%this.urKey, 0), getWord(%this.urKey, 1), "faceUR", %this);
+    GlobalActionMap.bindObj(getWord(%this.drKey, 0), getWord(%this.drKey, 1), "faceDR", %this);
+    GlobalActionMap.bindObj(getWord(%this.dlKey, 0), getWord(%this.dlKey, 1), "faceDL", %this);
 }
 
 function PlayerAimControlsBehavior::onBehaviorRemove(%this)
@@ -45,9 +45,9 @@ function PlayerAimControlsBehavior::onBehaviorRemove(%this)
        return;
 
     GlobalActionMap.unbindObj("keyboard", %this.upKey, %this);
-    GlobalActionMap.unbindObj("keyboard", %this.rgtKey, %this);
-    GlobalActionMap.unbindObj("keyboard", %this.dwnKey, %this);
-    GlobalActionMap.unbindObj("keyboard", %this.lftKey, %this);
+    GlobalActionMap.unbindObj("keyboard", %this.rightKey, %this);
+    GlobalActionMap.unbindObj("keyboard", %this.downKey, %this);
+    GlobalActionMap.unbindObj("keyboard", %this.leftKey, %this);
 
     GlobalActionMap.unbindObj("keyboard", %this.ulKey, %this);
     GlobalActionMap.unbindObj("keyboard", %this.urKey, %this);

@@ -1,0 +1,10 @@
+<ModuleDefinition
+	ModuleId="MainMenu"
+	VersionId="1"
+	Dependencies="AppCore=1,GameAssets=1,Console=1"
+	Group="game"
+	Description="Main Menu."
+	ScriptFile="main.cs"
+	CreateFunction="create"
+	DestroyFunction="destroy">
+</ModuleDefinition>

@@ -5,7 +5,6 @@
 if (!isObject(GlobalControlBehavior))
 {
     %template = new BehaviorTemplate(GlobalControlBehavior);
-
     %template.friendlyName = "Menu Controls";
     %template.behaviorType = "Input";
     %template.description  = "Menu and option basic control";

@@ -13,7 +13,7 @@ if (!isObject(AlignToJoystickBehavior))
    %template.addBehaviorField(xAxis, "The joystick's x-axis", keybind, "joystick0 rxaxis");
    %template.addBehaviorField(yAxis, "The joystick's y-axis", keybind, "joystick0 ryaxis");
    %template.addBehaviorField(turnSpeed, "The speed to rotate at (degrees per second). Use 0 to snap", float, 0.0);
-   %template.addBehaviorField(rotationOffset, "The rotation offset (degrees)", float, 0.0);
+   //%template.addBehaviorField(rotationOffset, "The rotation offset (degrees)", float, 0.0);
 }
 
 function AlignToJoystickBehavior::onBehaviorAdd(%this)
@@ -51,7 +51,7 @@ function AlignToJoystickBehavior::moveY(%this, %val)
 
 function AlignToJoystickBehavior::updateMovement(%this)
 {
-   %targetRotation = mRadToDeg(mAtan(%this.yVal, %this.xVal)) + %this.rotationOffset;
+   %targetRotation = mRadToDeg(mAtan(%this.yVal, %this.xVal));// + %this.rotationOffset;
    if (%this.turnSpeed == 0)
       %this.owner.rotation = %targetRotation;
    else

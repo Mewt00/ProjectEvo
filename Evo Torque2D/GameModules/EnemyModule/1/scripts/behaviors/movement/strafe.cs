@@ -40,7 +40,7 @@ function StrafeBehavior::onUpdate( %this )
 	else
 	{
     %startVelocity = %this.owner.specialX SPC %this.owner.specialY;
-    %targetRotation = Vector2AngleToPoint (%this.owner.getPosition(), %this.owner.mainTarget.getPosition()) + 90;
+    %targetRotation = Vector2AngleToPoint (%this.owner.getPosition(), %this.owner.mainTarget.getPosition());//+90 not needed?
 
     %xcomponent = %this.moveSpeed * mSin(mDegToRad(%targetRotation)) / %this.owner.moveBehaviorCount;
     %ycomponent = %this.moveSpeed * mCos(mDegToRad(%targetRotation)) / %this.owner.moveBehaviorCount;

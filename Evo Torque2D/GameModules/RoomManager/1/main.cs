@@ -16,7 +16,7 @@ function RoomManager::create( %this )
 {   	
 	setRandomSeed(getRealTime());
 	
-	OpenALInitDriver();							//for audio
+	//OpenALInitDriver();							//for audio
 	
 
     new SceneWindow(mainWindow)
@@ -27,12 +27,12 @@ function RoomManager::create( %this )
     mainWindow.profile = new GuiControlProfile();
     Canvas.setContent(mainWindow);
 	
-	new ScriptObject(InputManager);
-	mainWindow.addInputListener(InputManager);
+	//new ScriptObject(InputManager);
+	//mainWindow.addInputListener(InputManager);
 
-    mainWindow.setCameraPosition( 0, 0 );
-	
-	mainScene.layerSortMode0 = "Newest";
+    //mainWindow.setCameraPosition( 0, 0 );
+	//echo("main scene" @ isObject(mainScene));
+	//mainScene.layerSortMode0 = "Newest"; doesn't exist yet?
 	
     mainWindow.setCameraSize( $roomWidth, $roomHeight );
     //mainWindow.setCameraSize( $roomWidth*1.2, $roomHeight*1.2 );	//zoomed out cam
@@ -44,7 +44,15 @@ function RoomManager::create( %this )
     exec("./roomDefeatGUI.cs");
     exec("./scripts/behaviors/menus/GlobalControls.cs");
 	
+	enableXInput();
+		$enableDirectInput = true;
+		activateDirectInput();
+	
+	echo("Xinput:");
+	echoInputState();
+	
     GlobalActionMap.bindObj("keyboard", "Escape", "exitGame", %this);
+	//GlobalActionMap.bindObj("keyboard", "M", $pref::Video::fullscreen ^= !$pref::Video::fullScreen, %this);
 	
 	%this.goToTitleScreen( );
 	
@@ -58,6 +66,12 @@ function RoomManager::create( %this )
 	$genAlg = new GeneticAlgorithm();
 }
     
+//-----------------------------------------------------------------------------
+
+//function XInput::connect (%this) {
+//	echo("Connect hit");
+//}
+
 //-----------------------------------------------------------------------------
   
 function RoomManager::goToTitleScreen( %this )
@@ -88,7 +102,7 @@ function RoomManager::addTitleMusic(%this)
 	
 	$musicHandle = alxPlay(%musicAsset);	
 	
-	%this.schedule(alxGetAudioLength(%musicAsset), "addTitleMusic");
+	//%this.schedule(alxGetAudioLength(%musicAsset), "addTitleMusic");
 }
     
 //-----------------------------------------------------------------------------
@@ -127,6 +141,7 @@ function RoomManager::endCurrentLevel( %this )
 	//%this.currentArena.player.clearBehaviors();
 	//%this.currentArena.getScene().remove(%this.currentArena.player);
 	
+	//TODO: Fix the clearing of the Player object
 	%this.currentArena.getScene().schedule(320, "clear");  
 	%this.schedule(320, "goToRoomCompleteScreen");  
 }
@@ -308,7 +323,9 @@ function RoomManager::exitGame(%this, %val)
 
 function RoomManager::destroy(%this)
 {
+	echo("rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrReached RoomManager destroy and AL Driver");
 	OpenALShutdownDriver();
+	echo("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 }
 
 	

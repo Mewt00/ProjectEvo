@@ -373,7 +373,7 @@ string currentCase;
 	difference = euclideanDifference(tempRanged, tempMelee, tempBlock, tempDash, tempDPSwing, tempDPShot);
 
 	fileOut<< "Difference:" << difference << "\n";
-	Con::printf("diff: %f", difference);
+	//Con::printf("diff: %f", difference);
 
 	if(difference < .75 )
 	{
@@ -696,7 +696,7 @@ void GeneticAlgorithm::verifyAndPush( Genotype g )
 
 		}
 
-	Con::printf("%f / %f mutate" , points, pointLimit);
+	//Con::printf("%f / %f mutate" , points, pointLimit);
 
 
 	if(points <= pointLimit)
@@ -761,16 +761,16 @@ void GeneticAlgorithm::Xover ( int a, int b )
 				}
 			sprintf_s(numstr,"%d", *(geneIterator));
 			result+= numstr;
-			Con::printf("GA %s\n",result.c_str());
+			//Con::printf("GA %s\n",result.c_str());
 	}
 	while((g.getGene()->size()%NTOOLS) != 0) 
 	{
 		g.genePushBack(0);
-		Con::printf("In loop");
-		Con::printf("%d", (g.getGene()->size()%NTOOLS));
+		//Con::printf("In loop");
+		//Con::printf("%d", (g.getGene()->size()%NTOOLS));
 	}
 
-	Con::printf("After 0 added");
+	//Con::printf("After 0 added");
 
 	g2.assignGene(population[b].spliceGene(0, pointB), population[a].spliceGene(pointA, population[a].getGene()->size()));
 	while((g2.getGene()->size()%NTOOLS) != 0)

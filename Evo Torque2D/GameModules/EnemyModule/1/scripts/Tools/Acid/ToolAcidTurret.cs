@@ -43,7 +43,7 @@ function ToolAcidTurret::onUpdate( %this )
 	{
 		if(isObject(%this.owner.owner.mainTarget))
 		{
-			%targetRotation = Vector2AngleToPoint(%this.owner.getWorldPosistion(), %this.owner.owner.mainTarget.getPosition()) - 90;
+			%targetRotation = Vector2AngleToPoint(%this.owner.getWorldPosistion(), %this.owner.owner.mainTarget.getPosition());
 			%this.rotateTo(%targetRotation, %this.turnSpeed);
 		}
 		%this.setPosition(%this.owner.getWorldPosistion());

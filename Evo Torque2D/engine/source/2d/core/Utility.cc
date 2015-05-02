@@ -28,6 +28,8 @@
 #include "2d/sceneobject/SceneObject.h"
 #include "2d/core/Utility.h"
 
+#include "Utility_ScriptBinding.h"
+
 //-----------------------------------------------------------------------------
 
 ConsoleType( b2AABB, Typeb2AABB, sizeof(b2AABB), "" )
@@ -39,7 +41,7 @@ ConsoleGetType( Typeb2AABB )
 
     // Format AABB.
     char* pBuffer = Con::getReturnBuffer(64);
-    dSprintf(pBuffer, 64, "%.5g %.5g", pAABB->lowerBound.x, pAABB->lowerBound.y, pAABB->upperBound.x, pAABB->upperBound.y );
+    dSprintf(pBuffer, 64, "%.5g %.5g %.5g %.5g", pAABB->lowerBound.x, pAABB->lowerBound.y, pAABB->upperBound.x, pAABB->upperBound.y );
     return pBuffer;
 }
 
@@ -75,64 +77,6 @@ ConsoleSetType( Typeb2AABB )
 
 namespace Utility
 {
-
-//-----------------------------------------------------------------------------
-// Return a string containing the common elements of two space-separated strings of elements.
-//-----------------------------------------------------------------------------
-ConsoleFunction( t2dGetCommonElements, const char*, 3, 3, "(set1, set2) - Returns the common elements in two sets.")
-{
-    if (argc != 3)
-    {
-        Con::warnf("t2dGetCommonElements - Invalid number of parameters!");
-        return NULL;
-    }
-
-    // Grab the element count of the first set.
-    const U32 elementCount1 = Utility::mGetStringElementCount(argv[1]);
-
-    // Make sure we get at least one number.
-    if (elementCount1 < 1)
-    {
-        return NULL;
-    }
-
-    // Grab the element count of the second set.
-    const U32 elementCount2 = Utility::mGetStringElementCount(argv[2]);
-
-    // Make sure we get at least one number.
-    if (elementCount2 < 1)
-    {
-        return NULL;
-    }
-
-    char* buffer = Con::getReturnBuffer(dStrlen(argv[1]) + 1);
-    buffer[0] = '\0';
-    bool first = true;
-    
-    // Individual elements assumed to be 1024 or less in length
-    char element[1024];
-
-    // Check for common elements
-    for (U32 i = 0; i < elementCount1; i++)
-    {
-        dStrcpy(element,  Utility::mGetStringElement(argv[1], i, true));
-        
-        for (U32 j = 0; j < elementCount2; j++)
-        {
-            if (!dStrcmp(element, Utility::mGetStringElement(argv[2], j, true)))
-            {
-                if (!first)
-                    dStrcat(buffer, " ");
-                else
-                    first = false;
-
-                dStrcat(buffer, element);
-            }
-        }
-    }
-
-    return buffer;
-}
 
 //-----------------------------------------------------------------------------
 
@@ -269,7 +213,7 @@ const char* mGetStringElement( const char* inString, const U32 index, const bool
                 static char buffer[4096];
 
                 // Calculate word length.
-                const U32 length = inString - pWordStart - ((*inString)?1:0);
+                const U32 length = (const U32)(inString - pWordStart - ((*inString)?1:0));
 
                 // Copy Word.
                 dStrncpy( buffer, pWordStart, length);
@@ -381,6 +325,73 @@ U32 mGetStringElementCount( const char* inString )
 
     // We've finished.
     return wordCount;
+}
+
+//-----------------------------------------------------------------------------
+
+U32 mConvertStringToMask( const char* string )
+{
+    // Grab the element count of the first parameter.
+    const U32 elementCount = Utility::mGetStringElementCount(string);
+
+    // Make sure we get at least one number.
+    if (elementCount < 1)
+        return MASK_ALL;
+    else if ( elementCount == 1 )
+    {
+        if ( dStricmp( string, "all" ) == 0 )
+            return MASK_ALL;
+        else if ( dStricmp( string, "none" ) == 0 || dStricmp( string, "off" ) == 0 )
+            return 0;
+    }
+
+    // The mask.
+    U32 mask = 0;
+
+    // Convert the string to a mask.
+    for (U32 i = 0; i < elementCount; i++)
+    {
+        S32 bit = dAtoi(Utility::mGetStringElement(string, i));
+         
+        // Make sure the group is valid.
+        if ((bit < 0) || (bit >= MASK_BITCOUNT))
+        {
+            Con::warnf("Utility::mConvertStringToMask() - Invalid group specified (%d); skipped!", bit);
+            continue;
+        }
+         
+        mask |= (1 << bit);
+    }
+
+    return mask;
+}
+
+//-----------------------------------------------------------------------------
+
+const char* mConvertMaskToString( const U32 mask )
+{
+    bool first = true;
+    static char bits[128];
+    bits[0] = '\0';
+
+    if (!mask)
+    {
+        dSprintf(bits, 8, "none");
+        return bits;
+    }
+    
+    for (S32 i = 0; i < MASK_BITCOUNT; i++)
+    {
+        if (mask & BIT(i))
+        {
+            char bit[4];
+            dSprintf(bit, 4, "%s%d", first ? "" : " ", i);
+            first = false;
+            dStrcat(bits, bit);
+        }
+    }
+
+    return bits;
 }
 
 } // Namespace Utility

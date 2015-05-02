@@ -9,7 +9,7 @@ if (!isObject(FaceObjectBehavior))
    %template.description  = "Set the object to face another object";
 
    %template.addBehaviorField(object, "The object to face", object, "", t2dSceneObject);
-   %template.addBehaviorField(rotationOffset, "The rotation offset (degrees)", float, 0.0);
+   //%template.addBehaviorField(rotationOffset, "The rotation offset (degrees)", float, 0.0);
 }
 
 function FaceObjectBehavior::onBehaviorAdd(%this)
@@ -22,7 +22,7 @@ function FaceObjectBehavior::onUpdate(%this)
    if (!isObject(%this.object))
       return;
    
-   %targetRotation = Vector2AngleToPoint (%this.owner.getPosition(), %this.object.getPosition()) - 90;
+   %targetRotation = Vector2AngleToPoint (%this.owner.getPosition(), %this.object.getPosition());//TODO?
    
    %this.owner.rotateTo(%targetRotation, %this.owner.turnSpeed);
 }

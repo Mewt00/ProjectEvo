@@ -131,10 +131,10 @@ function Player::setupControls( %this )
 	//exec("./behaviors/controls/alignToJoystick.cs");
 	
  	%controls = PlayerMovementControlsBehavior.createInstance();
-	%controls.upKey = "keyboard W";
-	%controls.leftKey = "keyboard A";
-	%controls.downKey = "keyboard S";
-	%controls.rightKey = "keyboard D";
+	//%controls.upKey = "keyboard W";
+	//%controls.leftKey = "keyboard A";
+	//%controls.downKey = "keyboard S";
+	//%controls.rightKey = "keyboard D";
 	%this.addBehavior(%controls);
 	
  	%aimer = PlayerAimControlsBehavior.createInstance();
@@ -298,5 +298,10 @@ function Player::kill( %this, %murderer )
 
 function Player::onRemove( %this )
 {
+	echo("before:");
+	echo(isObject(controlActionMap));
+	//controlActionMap.delete();
+	echo("after delete?");
+	echo(isObject(controlActionMap));
 	%this.clearBehaviors();
 }

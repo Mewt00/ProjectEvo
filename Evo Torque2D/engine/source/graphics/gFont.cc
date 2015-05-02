@@ -29,6 +29,7 @@
 #include "graphics/gBitmap.h"
 #include "io/fileStream.h"
 #include "string/findMatch.h"
+#include "string/stringUnit.h"
 #include "graphics/TextureManager.h"
 #include "graphics/gFont.h"
 #include "memory/safeDelete.h"
@@ -37,318 +38,10 @@
 #include "zlib.h"
 #include "ctype.h"  // Needed for isupper and tolower
 
+#include "gFont_ScriptBinding.h"
+
 S32 GFont::smSheetIdCount = 0;
 const U32 GFont::csm_fileVersion = 3;
-
-ConsoleFunction(populateFontCacheString, void, 4, 4, "(faceName, size, string) "
-                "Populate the font cache for the specified font with characters from the specified string."
-                "@param faceName The font's name\n"
-                "@param size The size of the font.\n"
-                "@param string The string to use to fill font cache\n"
-                "@return No return value.")
-{
-   Resource<GFont> f = GFont::create(argv[1], dAtoi(argv[2]), Con::getVariable("$GUI::fontCacheDirectory"));
-
-   if(f.isNull())
-   {
-      Con::errorf("populateFontCacheString - could not load font '%s %d'!", argv[1], dAtoi(argv[2]));
-      return;
-   }
-
-   if(!f->hasPlatformFont())
-   {
-      Con::errorf("populateFontCacheString - font '%s %d' has no platform font! Cannot generate more characters.", argv[1], dAtoi(argv[2]));
-      return;
-   }
-
-   // This has the side effect of generating character info, including the bitmaps.
-   f->getStrWidthPrecise(argv[3]);
-}
-
-ConsoleFunction(populateFontCacheRange, void, 5, 5, "(faceName, size, rangeStart, rangeEnd) - "
-                "Populate the font cache for the specified font with Unicode code points in the specified range. "
-                "Note we only support BMP-0, so code points range from 0 to 65535."
-                "@param faceName The name of the font\n"
-                "@param size The size of the font.\n"
-                "@param rangeStart The initial Unicode point\n"
-                "@param rangeEnd The final Unicode point in range\n"
-                "@return No return value")
-{
-   Resource<GFont> f = GFont::create(argv[1], dAtoi(argv[2]), Con::getVariable("$GUI::fontCacheDirectory"));
-
-   if(f.isNull())
-   {
-      Con::errorf("populateFontCacheRange - could not load font '%s %d'!", argv[1], dAtoi(argv[2]));
-      return;
-   }
-
-   U32 rangeStart = dAtoi(argv[3]);
-   U32 rangeEnd   = dAtoi(argv[4]);
-
-   if(rangeStart > rangeEnd)
-   {
-      Con::errorf("populateFontCacheRange - range start is after end!");
-      return;
-   }
-
-   if(!f->hasPlatformFont())
-   {
-      Con::errorf("populateFontCacheRange - font '%s %d' has no platform font! Cannot generate more characters.", argv[1], dAtoi(argv[2]));
-      return;
-   }
-
-   // This has the side effect of generating character info, including the bitmaps.
-   for(U32 i=rangeStart; i<rangeEnd; i++)
-   {
-      if(f->isValidChar(i))
-         f->getCharWidth(i);
-      else
-         Con::warnf("populateFontCacheRange - skipping invalid char 0x%x",  i);
-   }
-
-   // All done!
-}
-
-ConsoleFunction(dumpFontCacheStatus, void, 1, 1, "() Dump a full description "
-                "of all cached fonts, along with info on the codepoints each contains.\n"
-                "@return No return value")
-{
-   FindMatch match("*.uft", 4096);
-   ResourceManager->findMatches(&match);
-
-   Con::printf("--------------------------------------------------------------------------");
-   Con::printf("   Font Cache Usage Report (%d fonts found)", match.numMatches());
-
-   for (U32 i = 0; i < (U32)match.numMatches(); i++)
-   {
-      char *curMatch = match.matchList[i];
-      Resource<GFont> font = ResourceManager->load(curMatch);
-
-      // Deal with inexplicably missing or failed to load fonts.
-      if (font.isNull())
-      {
-         Con::errorf(" o Couldn't load font : %s", curMatch);
-         continue;
-      }
-
-      // Ok, dump info!
-      font->dumpInfo();
-   }
-}
-
-ConsoleFunction(writeFontCache, void, 1, 1, "() force all cached fonts to"
-                "serialize themselves to the cache."
-                "@return No return value")
-{
-   FindMatch match("*.uft", 4096);
-   ResourceManager->findMatches(&match);
-
-   Con::printf("--------------------------------------------------------------------------");
-   Con::printf("   Writing font cache to disk (%d fonts found)", match.numMatches());
-
-   for (U32 i = 0; i < (U32)match.numMatches(); i++)
-   {
-      char *curMatch = match.matchList[i];
-      Resource<GFont> font = ResourceManager->load(curMatch);
-
-      // Deal with inexplicably missing or failed to load fonts.
-      if (font.isNull())
-      {
-         Con::errorf(" o Couldn't find font : %s", curMatch);
-         continue;
-      }
-
-      // Ok, dump info!
-      FileStream stream;
-      if(ResourceManager->openFileForWrite(stream, curMatch)) 
-      {
-         Con::printf("      o Writing '%s' to disk...", curMatch);
-         font->write(stream);
-         stream.close();
-      }
-      else
-      {
-         Con::errorf("      o Could not open '%s' for write!", curMatch);
-      }
-   }
-}
-
-ConsoleFunction(populateAllFontCacheString, void, 2, 2, "(string inString) "
-                "Populate the font cache for all fonts with characters from the specified string.\n"
-                "@param inString The string to use to set the font caches\n"
-                "@return No return value.")
-{
-   FindMatch match("*.uft", 4096);
-   ResourceManager->findMatches(&match);
-
-   Con::printf("Populating font cache with string '%s' (%d fonts found)", argv[1], match.numMatches());
-
-   for (U32 i = 0; i < (U32)match.numMatches(); i++)
-   {
-      char *curMatch = match.matchList[i];
-      Resource<GFont> font = ResourceManager->load(curMatch);
-
-      // Deal with inexplicably missing or failed to load fonts.
-      if (font.isNull())
-      {
-         Con::errorf(" o Couldn't load font : %s", curMatch);
-         continue;
-      }
-
-      if(!font->hasPlatformFont())
-      {
-         Con::errorf("populateAllFontCacheString - font '%s' has no platform font! Cannot generate more characters.", curMatch);
-         continue;
-      }
-
-      // This has the side effect of generating character info, including the bitmaps.
-      font->getStrWidthPrecise(argv[1]);
-   }
-}
-
-ConsoleFunction(populateAllFontCacheRange, void, 3, 3, "(rangeStart, rangeEnd) "
-                "Populate the font cache for all fonts with Unicode code points in the specified range. "
-                "Note we only support BMP-0, so code points range from 0 to 65535.\n"
-                "@param rangeStart, rangeEnd The range of the unicode points to populate caches with\n"
-                "@return No return value")
-{
-   U32 rangeStart = dAtoi(argv[1]);
-   U32 rangeEnd   = dAtoi(argv[2]);
-
-   if(rangeStart > rangeEnd)
-   {
-      Con::errorf("populateAllFontCacheRange - range start is after end!");
-      return;
-   }
-
-   FindMatch match("*.uft", 4096);
-   ResourceManager->findMatches(&match);
-
-   Con::printf("Populating font cache with range 0x%x to 0x%x (%d fonts found)", rangeStart, rangeEnd, match.numMatches());
-
-   for (U32 i = 0; i < (U32)match.numMatches(); i++)
-   {
-      char *curMatch = match.matchList[i];
-      Resource<GFont> font = ResourceManager->load(curMatch);
-
-      // Deal with inexplicably missing or failed to load fonts.
-      if (font.isNull())
-      {
-         Con::errorf(" o Couldn't load font : %s", curMatch);
-         continue;
-      }
-
-      if(!font->hasPlatformFont())
-      {
-         Con::errorf("populateAllFontCacheRange - font '%s' has no platform font! Cannot generate more characters.", curMatch);
-         continue;
-      }
-
-      // This has the side effect of generating character info, including the bitmaps.
-      Con::printf("   o Populating font '%s'", curMatch);
-      for(U32 i=rangeStart; i<rangeEnd; i++)
-      {
-         if(font->isValidChar(i))
-            font->getCharWidth(i);
-         else
-            Con::warnf("populateAllFontCacheRange - skipping invalid char 0x%x",  i);
-      }
-   }
-   // All done!
-}
-
-ConsoleFunction(exportCachedFont, void, 6, 6, "(fontName, size, fileName, padding, kerning) - "
-                "Export specified font to the specified filename as a PNG. The "
-                "image can then be processed in Photoshop or another tool and "
-                "reimported using importCachedFont. Characters in the font are"
-                "exported as one long strip.\n"
-                "@param fontName The name of the font to export.\n"
-                "@param size The size of the font\n"
-                "@param fileName The export file name.\n"
-                "@param padding Desired padding settings.\n"
-                "@param kerning Kerning settings (space between elements)\n"
-                "@return No return value.")
-{
-   // Read in some params.
-   const char *fileName = argv[3];
-   S32 padding    = dAtoi(argv[4]);
-   S32 kerning    = dAtoi(argv[5]);
-
-   // Tell the font to export itself.
-   Resource<GFont> f = GFont::create(argv[1], dAtoi(argv[2]), Con::getVariable("$GUI::fontCacheDirectory"));
-
-   if(f.isNull())
-   {
-      Con::errorf("populateFontCacheString - could not load font '%s %d'!", argv[1], dAtoi(argv[2]));
-      return;
-   }
-
-   f->exportStrip(fileName, padding, kerning);
-}
-
-ConsoleFunction(importCachedFont, void, 6, 6, "(fontName, size, fileName, padding, kerning) "
-                "Import an image strip from exportCachedFont. Call with the "
-                "same parameters you called exportCachedFont."
-                "@param fontName The name of the font to import.\n"
-                "@param size The size of the font\n"
-                "@param fileName The imported file name.\n"
-                "@param padding Desired padding settings.\n"
-                "@param kerning Kerning settings (space between elements)\n"
-                "@return No return value.")
-{
-   // Read in some params.
-   const char *fileName = argv[3];
-   S32 padding    = dAtoi(argv[4]);
-   S32 kerning    = dAtoi(argv[5]);
-
-   // Tell the font to import itself.
-   Resource<GFont> f = GFont::create(argv[1], dAtoi(argv[2]), Con::getVariable("$GUI::fontCacheDirectory"));
-
-   if(f.isNull())
-   {
-      Con::errorf("populateFontCacheString - could not load font '%s %d'!", argv[1], dAtoi(argv[2]));
-      return;
-   }
-
-   f->importStrip(fileName, padding, kerning);
-}
-
-ConsoleFunction(duplicateCachedFont, void, 4, 4, "(oldFontName, oldFontSize, newFontName) "
-                "Copy the specified old font to a new name. The new copy will not have a "
-                "platform font backing it, and so will never have characters added to it. "
-                "But this is useful for making copies of fonts to add postprocessing effects "
-                "to via exportCachedFont.\n"
-                "@param oldFontName The original font.\n"
-                "@param oldFontSize The original font's size property.\n"
-                "@param newFontName The name to set the copy to.\n"
-                "@return No return value.")
-{
-   char newFontFile[256];
-   GFont::getFontCacheFilename(argv[3], dAtoi(argv[2]), 256, newFontFile);
-
-   // Load the original font.
-   Resource<GFont> font = GFont::create(argv[1], dAtoi(argv[2]), Con::getVariable("$GUI::fontCacheDirectory"));
-
-   // Deal with inexplicably missing or failed to load fonts.
-   if (font.isNull())
-   {
-      Con::errorf(" o Couldn't find font : %s", newFontFile);
-      return;
-   }
-
-   // Ok, dump info!
-   FileStream stream;
-   if(ResourceManager->openFileForWrite(stream, newFontFile)) 
-   {
-      Con::printf("      o Writing duplicate font '%s' to disk...", newFontFile);
-      font->write(stream);
-      stream.close();
-   }
-   else
-   {
-      Con::errorf("      o Could not open '%s' for write!", newFontFile);
-   }
-}
 
 static PlatformFont* createSafePlatformFont(const char *name, U32 size, U32 charset = TGE_ANSI_CHARSET)
 {
@@ -409,9 +102,20 @@ void GFont::getFontCacheFilename(const char *faceName, U32 size, U32 buffLen, ch
 Resource<GFont> GFont::create(const char *faceName, U32 size, const char *cacheDirectory, U32 charset /* = TGE_ANSI_CHARSET */)
 {
    char buf[256];
+   Resource<GFont> ret;
+    
+    dSprintf(buf, sizeof(buf), "%s/%s %d (%s).fnt", cacheDirectory, faceName, size, getFontCharSetName(charset));
+    
+    ret = ResourceManager->load(buf);
+    if(bool(ret))
+    {
+        ret->mGFTFile = StringTable->insert(buf);
+        return ret;
+    }
+
    dSprintf(buf, sizeof(buf), "%s/%s %d (%s).uft", cacheDirectory, faceName, size, getFontCharSetName(charset));
 
-   Resource<GFont> ret = ResourceManager->load(buf);
+   ret = ResourceManager->load(buf);
    if(bool(ret))
    {
       ret->mGFTFile = StringTable->insert(buf);
@@ -536,8 +240,8 @@ bool GFont::loadCharInfo(const UTF16 ch)
 
         mCharInfoList.push_back(ci);
         mRemapTable[ch] = mCharInfoList.size() - 1;
-//don't save UFTs on the iPhone
-#ifndef TORQUE_OS_IOS
+//don't save UFTs on the iPhone or android device
+#if !defined(TORQUE_OS_IOS) && !defined(TORQUE_OS_ANDROID) && !defined(TORQUE_OS_EMSCRIPTEN)
         mNeedSave = true;
 #endif
 
@@ -962,7 +666,7 @@ bool GFont::read(Stream& io_rStream)
        mTextureSheets.increment();
        constructInPlace(&mTextureSheets.last());
        mTextureSheets.last() = TextureHandle(buf, bmp, TextureHandle::BitmapKeepTexture);
-       mTextureSheets.last().setFilter(GL_NEAREST);;
+       mTextureSheets.last().setFilter(GL_NEAREST);
    }
    
    // Read last position info
@@ -1087,7 +791,7 @@ bool GFont::write(Stream& stream)
 
          // Write out.
          stream.write((U32)destLen);
-         stream.write(destLen, outBuff);
+         stream.write((U32)destLen, outBuff);
       }
 
       // Put us back to normal.
@@ -1316,3 +1020,219 @@ void GFont::importStrip(const char *fileName, U32 padding, U32 kerning)
    for(S32 i=0; i<sheetSizes.size(); i++)
       mTextureSheets[i].refresh();
 }
+
+// ==================================
+// bmFont support
+// ==================================
+
+ResourceInstance* constructBMFont(Stream& stream)
+{
+
+    GFont *ret = new GFont;
+
+    if(!ret->readBMFont(stream))
+    {
+        SAFE_DELETE(ret);
+        ret = NULL;
+    }
+
+    return ret;
+}
+
+bool GFont::readBMFont(Stream& io_rStream)
+{
+    for (U32 i = 0; i < (sizeof(mRemapTable) / sizeof(S32)); i++)
+        mRemapTable[i] = -1;
+    
+    U32 bmWidth = 0;
+    U32 bmHeight = 0;
+    U32 numSheets = 0;
+    U32 currentPage = 0;
+    StringTableEntry fileName = StringTable->insert("");
+    
+    U32 numBytes = io_rStream.getStreamSize() - io_rStream.getPosition();
+    while((io_rStream.getStatus() != Stream::EOS) && numBytes > 0)
+    {
+        char Read[256];
+        char Token[256];
+        char *buffer = Con::getReturnBuffer(256);
+        io_rStream.readLine((U8 *)buffer, 256);
+        
+        char temp[256];
+        U32 tokenCount = StringUnit::getUnitCount(buffer, "\"");
+        
+        if (tokenCount > 1)
+        {
+            dSprintf(Token, 256, "%s", StringUnit::getUnit(buffer, 1, "\""));
+            dSprintf(temp, 256, "tok1");
+            dSprintf(buffer, 256, "%s", (char*)StringUnit::setUnit(buffer, 1, temp, "\""));
+        }
+        
+        U32 wordCount = StringUnit::getUnitCount(buffer, " \t\n");
+        
+        dSprintf(Read, 256, "%s", StringUnit::getUnit(buffer, 0, " \t\n"));
+        if( dStrcmp( Read, "info") == 0 )
+        {
+            U32 currentWordCount = 1;
+            while( currentWordCount < wordCount )
+            {
+                dSprintf(Read, 256, StringUnit::getUnit(buffer, currentWordCount, " \t\n"));
+                char temp[256];
+                char Key[256];
+                char Value[256];
+                
+                dSprintf(temp, 256, "%s", Read);
+                dSprintf(Key, 256, "%s", StringUnit::getUnit(temp, 0, "="));
+                dSprintf(Value, 256, "%s", StringUnit::getUnit(temp, 1, "="));
+                
+                if (dStrcmp( Value, "\"tok1\"") == 0) {
+                    dSprintf(Value, 256, "%s", Token);
+                }
+                
+                if( dStrcmp( Key, "size" ) == 0 )
+                    mSize = U16(dAtoi(Value));
+                currentWordCount++;
+            }
+        }
+        if( dStrcmp( Read, "common" ) == 0 )
+        {
+            U32 currentWordCount = 1;
+            //this holds common data
+            while( currentWordCount < wordCount )
+            {
+                dSprintf(Read, 256, "%s", StringUnit::getUnit(buffer, currentWordCount, " \t\n"));
+                char temp[256];
+                char Key[256];
+                char Value[256];
+                
+                dSprintf(temp, 256, "%s", Read);
+                dSprintf(Key, 256, "%s", StringUnit::getUnit(temp, 0, "="));
+                dSprintf(Value, 256, "%s", StringUnit::getUnit(temp, 1, "="));
+                
+                if (dStrcmp( Value, "\"tok1\"") == 0) {
+                    dSprintf(Value, 256, "%s", Token);
+                }
+                
+                if( dStrcmp( Key, "lineHeight" ) == 0 )
+                     mHeight = U16(dAtoi(Value));
+                else if( dStrcmp( Key, "base" ) == 0 )
+                    mBaseline = U16(dAtoi(Value));
+                else if( dStrcmp( Key, "scaleW" ) == 0 )
+                    bmWidth = U16(dAtoi(Value));
+                else if( dStrcmp( Key, "scaleH" ) == 0 )
+                    bmHeight = U16(dAtoi(Value));
+                else if( dStrcmp( Key, "pages" ) == 0 )
+                    numSheets = U16(dAtoi(Value));
+                currentWordCount++;
+            }
+            mAscent = mBaseline;
+            mDescent = mHeight - mBaseline;
+        }
+        else if( dStrcmp( Read, "page" ) == 0 )
+        {
+            //this is data for a page
+            U32 currentWordCount = 1;
+            //this holds common data
+            char lineLeft[256];
+            dSprintf ( lineLeft, 256, "%s", StringUnit::getUnit(buffer, 1, " \t\n"));
+            
+            while( currentWordCount < wordCount )
+            {
+                dSprintf(Read, 256, "%s", StringUnit::getUnit(buffer, currentWordCount, " \t\n"));
+                char temp[256];
+                char Key[256];
+                char Value[256];
+                
+                dSprintf(temp, 256, "%s", Read);
+                dSprintf(Key, 256, "%s", StringUnit::getUnit(temp, 0, "="));
+                dSprintf(Value, 256, "%s", StringUnit::getUnit(temp, 1, "="));
+                
+                if (dStrcmp( Value, "\"tok1\"") == 0) {
+                    dSprintf(Value, 256, "%s", Token);
+                }
+                
+                //assign the correct value
+                if( dStrcmp( Key, "id" ) == 0 )
+                    currentPage = U32(dAtoi(Value));
+                else if (dStrcmp( Key, "file" ) == 0 )
+                    fileName = StringTable->insert(Value);
+
+                currentWordCount++;
+            }
+        }
+        
+        else if( dStrcmp( Read, "char" ) == 0 )
+        {
+            PlatformFont::CharInfo ci; //  = &mCharInfoList[charIndex];
+            ci.bitmapData = NULL;
+            ci.bitmapIndex = currentPage;
+            //this is data for a character set
+            U16 CharID = 0;
+            U32 currentWordCount = 1;
+            //this holds common data
+            while( currentWordCount < wordCount )
+            {
+                dSprintf(Read, 256, "%s", StringUnit::getUnit(buffer, currentWordCount, " \t\n"));
+                char temp[256];
+                char Key[256];
+                char Value[256];
+                
+                
+                dSprintf(temp, 256, "%s", Read);
+                dSprintf(Key, 256, "%s", StringUnit::getUnit(temp, 0, "="));
+                dSprintf(Value, 256, "%s", StringUnit::getUnit(temp, 1, "="));
+                
+                if (dStrcmp( Value, "\"tok1\"") == 0) {
+                    dSprintf(Value, 256, "%s", Token);
+                }
+                
+                //assign the correct value
+                if( dStrcmp( Key, "id" ) == 0 )
+                    CharID = U32(dAtoi(Value));
+                if( dStrcmp( Key, "x" ) == 0 )
+                    ci.xOffset = U32(dAtoi(Value));
+                else if( dStrcmp( Key, "y" ) == 0 )
+                    ci.yOffset = U32(dAtoi(Value));
+                else if( dStrcmp( Key, "width" ) == 0 )
+                    ci.width = U32(dAtoi(Value));
+                else if( dStrcmp( Key, "height" ) == 0 )
+                    ci.height = U32(dAtoi(Value));
+                else if( dStrcmp( Key, "xoffset" ) == 0 )
+                    ci.xOrigin = S32(dAtoi(Value));
+                else if( dStrcmp( Key, "yoffset" ) == 0 )
+                    ci.yOrigin = mBaseline - S32(dAtoi(Value));
+                else if( dStrcmp( Key, "xadvance" ) == 0 )
+                    ci.xIncrement = S32(dAtoi(Value));
+                currentWordCount++;
+            }
+            mCharInfoList.push_back(ci);
+            mRemapTable[ CharID ] = mCharInfoList.size()-1;
+        }
+    }
+    
+    for(U32 i = 0; i < numSheets; i++)
+    {
+        char buf[1024];
+        dSprintf(buf, sizeof(buf), "%s/%s", Con::getVariable("$GUI::fontCacheDirectory"), fileName);
+        Con::printf("Platform::makeFullPathName %s", buf);
+        
+        GBitmap *bmp = dynamic_cast<GBitmap*>(ResourceManager->loadInstance(buf));
+        
+        if(bmp == NULL)
+        {
+            return false;
+        }
+        
+        char buff[30];
+        dSprintf(buff, sizeof(buff), "font_%d", smSheetIdCount++);
+        
+        mTextureSheets.increment();
+        constructInPlace(&mTextureSheets.last());
+        mTextureSheets.last() = TextureHandle(buf, bmp, TextureHandle::BitmapKeepTexture);
+        mTextureSheets.last().setFilter(GL_NEAREST);
+    }
+    return (io_rStream.getStatus() == Stream::EOS);
+}
+
+
+

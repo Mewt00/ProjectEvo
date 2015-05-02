@@ -1,24 +1,8 @@
+
 //-----------------------------------------------------------------------------
-// Copyright (c) 2013 GarageGames, LLC
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to
-// deal in the Software without restriction, including without limitation the
-// rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-// sell copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-// IN THE SOFTWARE.
+//Copyright (c) 2015 Chubby Bunny, LLC
 //-----------------------------------------------------------------------------
+
 
 //------------------------------------------------------------------------------
 // initializeCanvas
@@ -33,48 +17,73 @@ function initializeCanvas(%windowName)
         error("Cannot instantiate more than one canvas!");
         return;
     }
-
+	
     videoSetGammaCorrection($pref::OpenGL::gammaCorrection);
+	
+	echo("After Gamma");
+	//echo("Before createCanvas: " @ $pref::Video::windowedRes);
 
     if ( !createCanvas(%windowName) )
     {
         error("Canvas creation failed. Shutting down.");
         quit();
     }
+	
+	//echo("After createCanvas: " @ $pref::Video::windowedRes);
 
-    $pref::iOS::ScreenDepth = 32;
+    /*//$pref::iOS::ScreenDepth = 32;
 
-    if ( $pref::iOS::DeviceType !$= "" )
-    {
-        %resolution = iOSResolutionFromSetting($pref::iOS::DeviceType, $pref::iOS::ScreenOrientation);
-    }
+    //if ( $pref::iOS::DeviceType !$= "" )
+    //{
+    //    %resolution = iOSResolutionFromSetting($pref::iOS::DeviceType, $pref::iOS::ScreenOrientation);
+    //}
+    //else
+    //{}*/
+
+	//echo("windowedResoultion: " @ $pref::Video::windowedResolution);
+	
+	//If there is a defined windowedResolution in pref
+    if ( $pref::Video::windowedResolution !$= "" )
+	{
+        //%resolution = $pref::Video::windowedRes;
+		%resolution = $pref::Video::windowedResolution;
+		echo("Resolution: " @ %resolution);
+		//echo("Total if: " @ $pref::Video::windowedResolution);
+		//echo("Total if: " @ $pref::Video::windowedRes);
+	}
     else
-    {
-        if ( $pref::Video::windowedRes !$= "" )
-            %resolution = $pref::Video::windowedRes;
-        else
-            %resolution = $pref::Video::defaultResolution;
-    }
-
+	{
+        %resolution = $pref::Video::defaultResolution;
+		echo("Resolution: " @ %resolution);
+	}
+	
     if ($platform $= "windows" || $platform $= "macos")
     {
-        setScreenMode( %resolution._0, %resolution._1, %resolution._2, $pref::Video::fullScreen );
+		echo("Fullscreen: " @ $pref::Video::fullScreen);
+		if( $pref::Video::fullScreen )  
+			%resolution = $pref::Video::FullScreenResolution;
+		
+        setScreenMode(GetWord( %resolution, 0), GetWord( %resolution,1), GetWord( %resolution,2), $pref::Video::fullScreen );
     }
     else
     {
-        setScreenMode( %resolution._0, %resolution._1, %resolution._2, false );
+		echo("Not Mac or Windows, disallowing fullscreen." @ $pref::Video::fullScreen);
+
+        setScreenMode(GetWord( %resolution, 0), GetWord( %resolution,1), GetWord( %resolution,2), false );
     }
 	
+	/*echo("Fullscreen: " @ $pref::Video::fullScreen);
 	if( $pref::Video::fullScreen )  
     {  
 		%goodres = $pref::Video::FullScreenResolution;  
 		setScreenMode( GetWord( %goodres, 0), GetWord( %goodres,1), GetWord( %goodres,2), true );  
+		echo("Fullscreen after: " @ $pref::Video::fullScreen);
     }  
     else  
     {  
-		%goodres = $pref::Video::windowedRes;  
+		%goodres = $pref::Video::windowedResolution;  
 		setScreenMode( GetWord( %goodres, 0), GetWord( %goodres,1), GetWord( %goodres,2), false );  
-    }  
+    }  */
 
     $canvasCreated = true;
 }
@@ -89,6 +98,7 @@ function resetCanvas()
         Canvas.repaint();
 }
 
+/*
 //------------------------------------------------------------------------------
 // iOSResolutionFromSetting
 // Helper function that grabs resolution strings based on device type
@@ -141,4 +151,4 @@ function iOSResolutionFromSetting( %deviceType, %deviceScreenOrientation )
     }
    
     return %x @ " " @ %y;
-}
+}*/

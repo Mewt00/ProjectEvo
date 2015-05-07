@@ -33,15 +33,15 @@ function RoomDefeatGUI::openScreen(%this, %scene)
 
 function RoomDefeatGUI::addRoomFont(%this, %x, %y, %text)
 {
-	%this.addRoomNumFont(%x, %y, %text);
-	%this.addRoomNumFont(%x + 0.1, %y, %text);
-	%this.addRoomNumFont(%x + 0.1, %y + 0.1, %text);
-	%this.addRoomNumFont(%x, %y + 0.1, %text);
+	%this.drawText(%x, %y, %text);
+	%this.drawText(%x + 0.1, %y, %text);
+	%this.drawText(%x + 0.1, %y + 0.1, %text);
+	%this.drawText(%x, %y + 0.1, %text);
 }
 
 //-----------------------------------------------------------------------------
 
-function RoomDefeatGUI::addRoomNumFont(%this, %x, %y, %text)
+function RoomDefeatGUI::drawText(%this, %x, %y, %text)
 {
 	%font = new ImageFont();
 	%font.Image = "GameAssets:font";

@@ -18,7 +18,7 @@ if (!isObject(PlayerAimControlsBehavior))
   %template.addBehaviorField(ulKey, "", keybind, "keyboard I");
   %template.addBehaviorField(urKey, "", keybind, "keyboard O");
   %template.addBehaviorField(drKey, "", keybind, "keyboard Comma");
-  %template.addBehaviorField(dlKey, "", keybind, "keyboard M");
+  //%template.addBehaviorField(dlKey, "", keybind, "keyboard M");
 }
 
 function PlayerAimControlsBehavior::onBehaviorAdd(%this)
@@ -36,7 +36,7 @@ function PlayerAimControlsBehavior::onBehaviorAdd(%this)
     GlobalActionMap.bindObj(getWord(%this.ulKey, 0), getWord(%this.ulKey, 1), "faceUL", %this);
     GlobalActionMap.bindObj(getWord(%this.urKey, 0), getWord(%this.urKey, 1), "faceUR", %this);
     GlobalActionMap.bindObj(getWord(%this.drKey, 0), getWord(%this.drKey, 1), "faceDR", %this);
-    GlobalActionMap.bindObj(getWord(%this.dlKey, 0), getWord(%this.dlKey, 1), "faceDL", %this);
+    //GlobalActionMap.bindObj(getWord(%this.dlKey, 0), getWord(%this.dlKey, 1), "faceDL", %this);
 }
 
 function PlayerAimControlsBehavior::onBehaviorRemove(%this)
@@ -52,7 +52,7 @@ function PlayerAimControlsBehavior::onBehaviorRemove(%this)
     GlobalActionMap.unbindObj("keyboard", %this.ulKey, %this);
     GlobalActionMap.unbindObj("keyboard", %this.urKey, %this);
     GlobalActionMap.unbindObj("keyboard", %this.drKey, %this);
-    GlobalActionMap.unbindObj("keyboard", %this.dlKey, %this);
+    //GlobalActionMap.unbindObj("keyboard", %this.dlKey, %this);
 }
 
 //------------------------------------------------------------------------------------

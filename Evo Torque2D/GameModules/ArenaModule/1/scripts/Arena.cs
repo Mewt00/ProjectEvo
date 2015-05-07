@@ -37,6 +37,9 @@ function Arena::buildArena(%this)
     
     %this.addArenaBoundaries( $roomWidth, $roomHeight );
 	
+	echo("buildArena before music");
+	%this.addBackgroundMusic();
+	
     //%this.setUpdateCallback(true);
 	
 	%this.dropPickupChance = 15;
@@ -44,7 +47,9 @@ function Arena::buildArena(%this)
 	//Populate room
 	%this.player = %this.spawnPlayer(0, 0);		//add player before Enemies!
 	
-	%this.roomChromosomes = "";
+	%this.nextArenaWave();
+	
+	/*%this.roomChromosomes = "";
 	
 	// Enemy Info
 	%this.EnemyCount = 0;
@@ -64,6 +69,7 @@ function Arena::buildArena(%this)
 	//%this.getScene().schedule($roomStartLag, "setScenePause", true);
 	%this.schedule($roomStartLag, "addREADYFont", 0, 0);
 	
+	echo("buildArena before music");
 	%this.addBackgroundMusic();
 	
 	if(%this.currLevel == 1)		//starting chromosome for first level, every game
@@ -77,119 +83,11 @@ function Arena::buildArena(%this)
 	for(%i = 0; %i < %enemyUnitCount; %i++)
 	{
 		%this.spawnPoints[%i] = %this.findSpawnLocation();		//record a random spawn location (not on top of player)
-	}
+	}*/
 }
-
-//-----------------------------------------------------------------------------
-//start single backgroun track on repeat
-function Arena::addBackgroundMusic(%this)
-{
-	echo("arena: audio");		
-	
-	%musicAsset = "GameAssets:roomMusic";
-	
-	$musicHandle = alxPlay(%musicAsset);	
-	
-	%this.schedule(alxGetAudioLength(%musicAsset), "addBackgroundMusic");
-}
-
-//-----------------------------------------------------------------------------
-//display current level/room number
-function Arena::addRoomFont(%this, %x, %y)
-{
-	%text = "Room:" @ %this.currLevel;
-	//draw font 4 times (slightly offset) for pseudo boldness
-	%this.addRoomNumFont(%x, %y, "3 3", %text, "Left", "1 1 0");
-	%this.addRoomNumFont(%x + 0.1, %y, "3 3", %text, "Left", "1 1 0");
-	%this.addRoomNumFont(%x + 0.1, %y + 0.1, "3 3", %text, "Left", "1 1 0");
-	%this.addRoomNumFont(%x, %y + 0.1, "3 3", %text, "Left", "1 1 0");
-}
-
-//-----------------------------------------------------------------------------
-//draw specified text in specified color
-//TODO: function should probably be renamed to be more generic (drawText(...), or addTextOverlay(...))
-function Arena::addRoomNumFont(%this, %x, %y, %size, %text, %align, %colorBlend)
-{
-	%font = new ImageFont();
-	%font.Image = "GameAssets:font";
-	%font.Text = %text;
-	%font.FontSize = %size;
-	%font.setPosition(%x, %y);
-	%font.TextAlignment = %align;
-	%font.setBlendColor(%colorBlend);
-	%this.getScene().add( %font ); 
-	
-	return %font;
-}
-
-//-----------------------------------------------------------------------------
-
-function Arena::addREADYFont(%this, %x, %y)
-{
-	%text = "READY?";
-	%lifeSpan = 1500;
-	
-	//draw font 4 times (slightly offset) for pseudo boldness
-	//TODO: READY/SET/GO 4 (each) font draws draws could be done through a function
-	%this.addRoomNumFont(%x, %y, "5 5", %text, "Center", "1 0 0").schedule(%lifeSpan, "safeDelete");
-	%this.addRoomNumFont(%x + 0.1, %y, "5 5", %text, "Center", "1 0 0").schedule(%lifeSpan, "safeDelete");
-	%this.addRoomNumFont(%x + 0.1, %y + 0.1, "5 5", %text, "Center", "1 0 0").schedule(%lifeSpan, "safeDelete");
-	%this.addRoomNumFont(%x, %y + 0.1, %text, "5 5", "Center", "1 0 0").schedule(%lifeSpan, "safeDelete");
-	
-	//-spawn shadow dusts (effect for enemy spawn)---------------
-	//TODO: should probably be moved to a separate function. Call from buildArena()
-	%enemyUnitCount = mFloor(getWordCount(%this.currChromosome)/%this.toolVarietyCount);
-	for(%i = 0; %i < %enemyUnitCount; %i++)
-	{
-		%shadowDust = new CompositeSprite()			//create new dust object
-		{
-			class = "shadowDust";
-			myArena = %this;
-			lifeSpan = (%lifeSpan*2)/1000;
-		};
-		
-		%this.getScene().add( %shadowDust );		//add dust object to scene
-		
-		%shadowDust.setPosition(%this.spawnPoints[%i]);	//move dust to coorisponding enemy spawn loc.
-	}
-	
-	//-schedule next text to appear-------------------
-	%this.schedule(%lifeSpan, "addSETFont", %x, %y);	
-}
-
-//-----------------------------------------------------------------------------
-
-function Arena::addSETFont(%this, %x, %y)
-{
-	%text = "SET";
-	%lifeSpan = 1500;
-	//TODO: READY/SET/GO 4 (each) font draws draws could be done through a function
-	%this.addRoomNumFont(%x, %y, "6 6", %text, "Center", "1 1 0").schedule(%lifeSpan, "safeDelete");
-	%this.addRoomNumFont(%x + 0.1, %y, "6 6", %text, "Center", "1 1 0").schedule(%lifeSpan, "safeDelete");
-	%this.addRoomNumFont(%x + 0.1, %y + 0.1, "6 6", %text, "Center", "1 1 0").schedule(%lifeSpan, "safeDelete");
-	%this.addRoomNumFont(%x, %y + 0.1, %text, "6 6", "Center", "1 1 0").schedule(%lifeSpan, "safeDelete");
-	
-	%this.schedule(%lifeSpan, "addGOFont", %x, %y);
-	%this.schedule(%lifeSpan, "processRoomChromosomes");
-}
-
-//-----------------------------------------------------------------------------
-
-function Arena::addGOFont(%this, %x, %y)
-{
-	%text = "FIGHT!";
-	%lifeSpan = 1500;
-	//TODO: READY/SET/GO 4 (each) font draws draws could be done through a function
-	%this.addRoomNumFont(%x, %y, "7 7", %text, "Center", "0 1 0").schedule(%lifeSpan, "safeDelete");
-	%this.addRoomNumFont(%x + 0.1, %y, "7 7", %text, "Center", "0 1 0").schedule(%lifeSpan, "safeDelete");
-	%this.addRoomNumFont(%x + 0.1, %y + 0.1, "7 7", %text, "Center", "0 1 0").schedule(%lifeSpan, "safeDelete");
-	%this.addRoomNumFont(%x, %y + 0.1, %text, "7 7", "Center", "0 1 0").schedule(%lifeSpan, "safeDelete");	
-}
-
 
 //-----------------------------------------------------------------------------
 // add boundaries on all sides of the Arena
-
 function Arena::addArenaBoundaries(%this, %width, %height)
 {
 
@@ -224,8 +122,196 @@ function Arena::createOneArenaBoundary(%this, %side, %position, %size)
 }
 
 //-----------------------------------------------------------------------------
-// add a Player object to the Arena at specified location
+//start single background track on repeat
+function Arena::addBackgroundMusic(%this)
+{
+	echo("arena: audio");		
+	
+	%musicAsset = "GameAssets:roomMusic";
+	
+	$roomMusicHandle = alxPlay(%musicAsset);	
+	
+	echo("Playing" @ alxIsPlaying($roomMusicHandle));
+	
+	//%this.schedule(alxGetAudioLength(%musicAsset), "addBackgroundMusic");
+}
 
+//-----------------------------------------------------------------------------
+
+function Arena::nextArenaWave(%this)
+{
+    /*// Background
+    %background = new Sprite() {class="backgroundObj";};
+    %background.setBodyType( "static" );
+    %background.setImage( "GameAssets:background" );
+    %background.setSize( $roomWidth, $roomHeight );
+    %background.setCollisionSuppress();
+    %background.setAwake( false );
+    %background.setActive( false );
+    %background.setSceneLayer(30);
+    %background.setSceneGroup( Utility.getCollisionGroup("") );
+    %this.getScene().add( %background );
+    
+    // Arena Edges
+    %roomEdges = new Sprite() {class="backgroundObj";};
+    %roomEdges.setBodyType( "static" );
+    %roomEdges.setImage( "GameAssets:backgroundedging" );
+    %roomEdges.setSize( $roomWidth, $roomHeight );
+    %roomEdges.setCollisionSuppress();
+    %roomEdges.setAwake( false );
+    %roomEdges.setActive( false );
+    %roomEdges.setSceneLayer(2);
+    %roomEdges.setSceneGroup( Utility.getCollisionGroup("") );
+    %this.getScene().add( %roomEdges ); 
+    
+    %this.addArenaBoundaries( $roomWidth, $roomHeight );
+	
+    //%this.setUpdateCallback(true);
+	
+	%this.dropPickupChance = 15;
+	
+	//Populate room
+	%this.player = %this.spawnPlayer(0, 0);		//add player before Enemies!*/
+	
+	%this.roomChromosomes = "";
+	
+	// Enemy Info
+	%this.EnemyCount = 0;
+	%this.toolVarietyCount = 7;		//number of different tools available, length of local chromosomes
+	
+	//-RoomDamageTracking---
+	//      (damage dealt by player)
+	%this.roomShooterDamage = 0;
+	%this.roomShooterShotsFired = 0;
+	%this.roomBladeDamage = 0;
+	%this.roomBladeAttackNums = 0;
+
+	%this.addRoomFont(-$roomWidth/2 + 1, $roomHeight/2 - 0.5);
+	
+	$roomStartLag = 1;		//delay before READY text appears
+	//%this.getScene().setScenePause(true);
+	//%this.getScene().schedule($roomStartLag, "setScenePause", true);
+	%this.schedule($roomStartLag, "addREADYFont", 0, 0);
+	
+	echo("buildArena before music");
+	/*%this.addBackgroundMusic();*/
+	
+	if(%this.currLevel == 1)		//starting chromosome for first level, every game
+	{
+		%this.currChromosome = "0 0 0 0 0 0 1" SPC
+					  "0 0 0 0 0 0 1";
+	}
+	
+	//gather spawn points
+	%enemyUnitCount = mFloor(getWordCount(%this.currChromosome)/%this.toolVarietyCount);	//number of enemy units
+	for(%i = 0; %i < %enemyUnitCount; %i++)
+	{
+		%this.spawnPoints[%i] = %this.findSpawnLocation();		//record a random spawn location (not on top of player)
+	}
+}
+
+//-----------------------------------------------------------------------------
+//display current level/room number
+function Arena::addRoomFont(%this, %x, %y)
+{
+	%text = "Room:" @ %this.currLevel;
+	//draw font 4 times (slightly offset) for pseudo boldness
+	%this.drawText(%x, %y, "3 3", %text, "Left", "1 1 0");
+	%this.drawText(%x + 0.1, %y, "3 3", %text, "Left", "1 1 0");
+	%this.drawText(%x + 0.1, %y + 0.1, "3 3", %text, "Left", "1 1 0");
+	%this.drawText(%x, %y + 0.1, "3 3", %text, "Left", "1 1 0");
+}
+
+//-----------------------------------------------------------------------------
+///draw (posX, posY, size, text, alignment, color
+function Arena::drawText(%this, %x, %y, %size, %text, %align, %colorBlend)
+{
+	%font = new ImageFont();
+	%font.Image = "GameAssets:font";
+	%font.Text = %text;
+	%font.FontSize = %size;
+	%font.setPosition(%x, %y);
+	%font.TextAlignment = %align;
+	%font.setBlendColor(%colorBlend);
+	%this.getScene().add( %font ); 
+	
+	return %font;
+}
+
+//-----------------------------------------------------------------------------
+
+function Arena::addREADYFont(%this, %x, %y)
+{
+	%text = "READY?";
+	%lifeSpan = 1500;
+	
+	//draw font 4 times (slightly offset) for pseudo boldness
+	//TODO: READY/SET/GO 4 (each) font draws draws could be done through a function
+	%this.drawText(%x, %y, "5 5", %text, "Center", "1 0 0").schedule(%lifeSpan, "safeDelete");
+	%this.drawText(%x + 0.1, %y, "5 5", %text, "Center", "1 0 0").schedule(%lifeSpan, "safeDelete");
+	%this.drawText(%x + 0.1, %y + 0.1, "5 5", %text, "Center", "1 0 0").schedule(%lifeSpan, "safeDelete");
+	%this.drawText(%x, %y + 0.1, %text, "5 5", "Center", "1 0 0").schedule(%lifeSpan, "safeDelete");
+	
+	%this.spawnEnemyPoof();
+	
+	//-schedule next text to appear-------------------
+	%this.schedule(%lifeSpan, "addSETFont", %x, %y);	
+}
+
+//-----------------------------------------------------------------------------
+
+function Arena::addSETFont(%this, %x, %y)
+{
+	%text = "SET";
+	%lifeSpan = 1500;
+	//TODO: READY/SET/GO 4 (each) font draws draws could be done through a function
+	%this.drawText(%x, %y, "6 6", %text, "Center", "1 1 0").schedule(%lifeSpan, "safeDelete");
+	%this.drawText(%x + 0.1, %y, "6 6", %text, "Center", "1 1 0").schedule(%lifeSpan, "safeDelete");
+	%this.drawText(%x + 0.1, %y + 0.1, "6 6", %text, "Center", "1 1 0").schedule(%lifeSpan, "safeDelete");
+	%this.drawText(%x, %y + 0.1, %text, "6 6", "Center", "1 1 0").schedule(%lifeSpan, "safeDelete");
+	
+	%this.schedule(%lifeSpan, "addGOFont", %x, %y);
+	%this.schedule(%lifeSpan, "processRoomChromosomes");
+}
+
+//-----------------------------------------------------------------------------
+
+function Arena::addGOFont(%this, %x, %y)
+{
+	%text = "FIGHT!";
+	%lifeSpan = 1500;
+	//TODO: READY/SET/GO 4 (each) font draws draws could be done through a function
+	%this.drawText(%x, %y, "7 7", %text, "Center", "0 1 0").schedule(%lifeSpan, "safeDelete");
+	%this.drawText(%x + 0.1, %y, "7 7", %text, "Center", "0 1 0").schedule(%lifeSpan, "safeDelete");
+	%this.drawText(%x + 0.1, %y + 0.1, "7 7", %text, "Center", "0 1 0").schedule(%lifeSpan, "safeDelete");
+	%this.drawText(%x, %y + 0.1, %text, "7 7", "Center", "0 1 0").schedule(%lifeSpan, "safeDelete");	
+}
+
+//-----------------------------------------------------------------------------
+//-spawn shadow dusts (effect for enemy spawn)
+//TODO: should probably be moved to a separate function. Call from buildArena()
+function Arena::spawnEnemyPoof( %this )
+{
+	%lifeSpan = 1500;
+	%enemyUnitCount = mFloor(getWordCount(%this.currChromosome)/%this.toolVarietyCount);
+	for(%i = 0; %i < %enemyUnitCount; %i++)
+	{
+		%shadowDust = new CompositeSprite()			//create new dust object
+		{
+			class = "shadowDust";
+			myArena = %this;
+			lifeSpan = (%lifeSpan*2)/1000;
+		};
+		
+		
+		
+		%shadowDust.setPosition(%this.spawnPoints[%i]);	//move dust to corresponding enemy spawn loc.
+		%this.getScene().add( %shadowDust );		//add dust object to scene
+	}
+}
+
+//-----------------------------------------------------------------------------
+// add a Player object to the Arena at specified location
 function Arena::spawnPlayer(%this, %xPos, %yPos)
 {
 	%mainPlayer = new CompositeSprite()
@@ -246,7 +332,6 @@ function Arena::spawnPlayer(%this, %xPos, %yPos)
 //-----------------------------------------------------------------------------
 //break up Chromosome string and start spawning enemies according to sub-strings of the Chromosome
 ///ordering: armor/parry/acid/tar/blade/shooter/blob
-
 function Arena::processRoomChromosomes(%this)
 {
 	echo("Chromosome:" SPC %chromosome);

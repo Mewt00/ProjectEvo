@@ -4,7 +4,7 @@
     HorizSizing="relative"
     VertSizing="relative"
     Position="0 0"
-    Extent="1024 768"
+    Extent="1280 720"
     MinExtent="320 320"
     Visible="1"
     Image="@asset=GameAssets:menu_titleScreenBkgrd">
@@ -29,6 +29,27 @@
         groupNum="-1"
         useMouseEvents="1" />
 
+		<!-- Options-->
+    <GuiButtonCtrl
+		Name="OptionsButton"
+        Profile="BlueButtonProfile"
+		Text="Options"
+		ButtonType="PushButton"
+		canSaveDynamicFields="0"
+        isContainer="0"
+        HorizSizing="relative"
+        VertSizing="relative"
+		Position="412 399"
+		Extent="200 30"
+		MinExtent="100 15"
+        canSave="1"
+        Visible="1"
+        Active="1"
+        hovertime="1000"
+        groupNum="-1"
+        useMouseEvents="1" />
+
+		
     <!-- Quit Game-->
     <GuiButtonCtrl
         Name="QuitButton"
@@ -39,7 +60,7 @@
         isContainer="0"
         HorizSizing="relative"
         VertSizing="relative"
-        Position="412 399"
+        Position="412 429"
         Extent="200 30"
         MinExtent="100 15"
         canSave="1"

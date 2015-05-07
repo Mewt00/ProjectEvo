@@ -2,7 +2,7 @@
 	ModuleId="RoomManager"
 	VersionId="1"
 	Description="Adaptive game room manager"
-	Dependencies="GameAssets,AppCore"
+	Dependencies="AppCore=1,GameAssets=1,MainMenu=1,Console=1"
 	Group="game"
 	ScriptFile="main.cs"
 	CreateFunction="create"

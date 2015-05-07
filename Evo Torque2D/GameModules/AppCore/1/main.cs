@@ -22,18 +22,19 @@ function AppCore::create( %this )
     // Initialize audio
     initializeOpenAL();
     
-    ModuleDatabase.loadGroup("game");
+    ModuleDatabase.loadExplicit("MainMenu");
+	ModuleDatabase.loadExplicit("Console");
+	echo("Appcore create done");
 }
 
 //-----------------------------------------------------------------------------
 
 function AppCore::destroy( %this )
 {
-	/*TODO unload Modules order
-	echo("rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
-	ModuleDatabase.unloadGroup("game");
-	echo("After");
-	*/
+	
+	OpenALShutdownDriver();
+	ModuleDatabase.unloadExplicit("MainMenu");
+	ModuleDatabase.unloadExplicit("Console");
 
 }
 

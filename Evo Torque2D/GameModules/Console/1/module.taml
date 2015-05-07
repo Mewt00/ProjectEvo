@@ -2,7 +2,6 @@
 	ModuleId="Console"
 	VersionId="1"
 	Dependencies="AppCore=1"
-	    Group="game"
 	Description="A Console GUI for general debugging."
 	ScriptFile="main.cs"
 	CreateFunction="create"

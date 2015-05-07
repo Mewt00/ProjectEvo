@@ -4,25 +4,19 @@
 
 if (!isObject(PlayerMovementControlsBehavior))
 {
-    %template = new BehaviorTemplate(PlayerMovementControlsBehavior);
+	echo("controlActionMap exec");
 	
-	echo("ActionMap1:");
-	echo(isObject(controlActionMap));
+    %template = new BehaviorTemplate(PlayerMovementControlsBehavior);
 	
 	if(isObject(controlActionMap))
 	{
+		echo("controlActionMap being popped and deleted");
 		controlActionMap.pop();
 		controlActionMap.delete();
 	}
 	
-	echo("ActionMap2:");
-	echo(isObject(controlActionMap));
+	//new ActionMap(controlActionMap);
 	
-	new ActionMap(controlActionMap);
-	
-	echo("ActionMap3:");
-	echo(isObject(controlActionMap));
-
 	%template.friendlyName = "Shooter Controls";
 	%template.behaviorType = "Input";
 	%template.description  = "Shooter style movement control";
@@ -32,40 +26,40 @@ if (!isObject(PlayerMovementControlsBehavior))
 	%template.addBehaviorField(leftKey, "Key to bind to left movement", keybind, "keyboard A");
 	%template.addBehaviorField(rightKey, "Key to bind to right movement", keybind, "keyboard D");
 	
-	%template.addBehaviorField(upRightKey, "Key to bind for up-right movement", keybind, "keyboard U");	//diagonal (for joy to key)
-	%template.addBehaviorField(upLeftKey, "Key to bind to up-left movement", keybind, "keyboard Y");
-	%template.addBehaviorField(downLeftKey, "Key to bind to down-left movement", keybind, "keyboard B");
-	%template.addBehaviorField(downRightKey, "Key to bind to down-right movement", keybind, "keyboard N");
+	//%template.addBehaviorField(upRightKey, "Key to bind for up-right movement", keybind, "keyboard U");	//diagonal (for joy to key)
+	//%template.addBehaviorField(upLeftKey, "Key to bind to up-left movement", keybind, "keyboard Y");
+	//%template.addBehaviorField(downLeftKey, "Key to bind to down-left movement", keybind, "keyboard B");
+	//%template.addBehaviorField(downRightKey, "Key to bind to down-right movement", keybind, "keyboard N");
 
 	%template.addBehaviorField(fireKey, "", keybind, "keyboard space");
 	%template.addBehaviorField(meleeKey, "", keybind, "keyboard E");
 	%template.addBehaviorField(dashKey, "", keybind, "keyboard Q");
 	%template.addBehaviorField(blockKey, "", keybind, "keyboard F");
 	
-	controlActionMap.push();
+	//controlActionMap.push();
 }
 
 //------------------------------------------------------------------------------------
 
 function PlayerMovementControlsBehavior::onBehaviorAdd(%this)
 {
-	echo("ActionMap:");
+	echo("ActionMap isObject:");
 	echo(isObject(controlActionMap));
     if (!isObject(controlActionMap))
        return;
 
 	controlActionMap.bindObj(getWord(%this.upKey, 0), getWord(%this.upKey, 1), "moveUp", %this);
-	echo("echo here");
-	echo(getWord(%this.upKey, 0));
-	echo(getWord(%this.upKey, 1));
+	//echo("echo here");
+	//echo(getWord(%this.upKey, 0));
+	//echo(getWord(%this.upKey, 1));
 	controlActionMap.bindObj(getWord(%this.downKey, 0), getWord(%this.downKey, 1), "moveDown", %this);
 	controlActionMap.bindObj(getWord(%this.leftKey, 0), getWord(%this.leftKey, 1), "moveLeft", %this);
 	controlActionMap.bindObj(getWord(%this.rightKey, 0), getWord(%this.rightKey, 1), "moveRight", %this);
 	
-	controlActionMap.bindObj(getWord(%this.upRightKey, 0), getWord(%this.upRightKey, 1), "moveUpRight", %this);
-	controlActionMap.bindObj(getWord(%this.upLeftKey, 0), getWord(%this.upLeftKey, 1), "moveUpLeft", %this);
-	controlActionMap.bindObj(getWord(%this.downLeftKey, 0), getWord(%this.downLeftKey, 1), "moveDownLeft", %this);
-	controlActionMap.bindObj(getWord(%this.downRightKey, 0), getWord(%this.downRightKey, 1), "moveDownRight", %this);
+	//controlActionMap.bindObj(getWord(%this.upRightKey, 0), getWord(%this.upRightKey, 1), "moveUpRight", %this);
+	//controlActionMap.bindObj(getWord(%this.upLeftKey, 0), getWord(%this.upLeftKey, 1), "moveUpLeft", %this);
+	//controlActionMap.bindObj(getWord(%this.downLeftKey, 0), getWord(%this.downLeftKey, 1), "moveDownLeft", %this);
+	//controlActionMap.bindObj(getWord(%this.downRightKey, 0), getWord(%this.downRightKey, 1), "moveDownRight", %this);
 
 	controlActionMap.bindObj("keyboard", %this.fireKey, "pressFire", %this);
 	controlActionMap.bindObj("keyboard", %this.meleeKey, "pressMelee", %this);
@@ -107,6 +101,8 @@ function PlayerMovementControlsBehavior::onBehaviorAdd(%this)
 	
 	%this.fireHeld = false;
 	%this.strikeHeld = false;
+	
+	controlActionMap.push();
 	
 	/*
 	//Print directional input
@@ -164,10 +160,10 @@ function PlayerMovementControlsBehavior::onBehaviorRemove(%this)
 	controlActionMap.unbindObj(getWord(%this.leftKey, 0), getWord(%this.leftKey, 1), %this);
 	controlActionMap.unbindObj(getWord(%this.rightKey, 0), getWord(%this.rightKey, 1), %this);
 	
-	controlActionMap.unbindObj(getWord(%this.upRightKey, 0), getWord(%this.upRightKey, 1), %this);
-	controlActionMap.unbindObj(getWord(%this.upLeftKey, 0), getWord(%this.upLeftKey, 1), %this);
-	controlActionMap.unbindObj(getWord(%this.downLeftKey, 0), getWord(%this.downLeftKey, 1), %this);
-	controlActionMap.unbindObj(getWord(%this.downRightKey, 0), getWord(%this.downRightKey, 1), %this);
+	//controlActionMap.unbindObj(getWord(%this.upRightKey, 0), getWord(%this.upRightKey, 1), %this);
+	//controlActionMap.unbindObj(getWord(%this.upLeftKey, 0), getWord(%this.upLeftKey, 1), %this);
+	//controlActionMap.unbindObj(getWord(%this.downLeftKey, 0), getWord(%this.downLeftKey, 1), %this);
+	//controlActionMap.unbindObj(getWord(%this.downRightKey, 0), getWord(%this.downRightKey, 1), %this);
 
 	controlActionMap.unbindObj("keyboard", %this.fireKey, %this);
 	controlActionMap.unbindObj("keyboard", %this.meleeKey, %this);
@@ -178,6 +174,8 @@ function PlayerMovementControlsBehavior::onBehaviorRemove(%this)
 	%this.down = 0;
 	%this.left = 0;
 	%this.right = 0;
+	
+	inGameMenuActionMap.delete();
 }
 
 //------------------------------------------------------------------------------------
@@ -377,7 +375,7 @@ function PlayerMovementControlsBehavior::LAnalogX(%this, %val)
 
 //------------------------------------------------------------------------------------
   
-function PlayerMovementControlsBehavior::moveUpRight(%this, %val)
+/*function PlayerMovementControlsBehavior::moveUpRight(%this, %val)
 {
 	if(%val == 1)
 	{
@@ -429,7 +427,7 @@ function PlayerMovementControlsBehavior::moveDownRight(%this, %val)
 	{
 		%this.downRight = 0;
 	}
-}
+}*/
 
 //------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------

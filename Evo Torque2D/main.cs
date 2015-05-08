@@ -28,7 +28,7 @@ $Scripts::ignoreDSOs = true;
 setCompanyAndProduct("Chubby Bunny", "ProjectEvo" );
 
 // Set module database information echo.
-ModuleDatabase.EchoInfo = false;
+ModuleDatabase.EchoInfo = true;
 
 // Set asset database information echo.
 AssetDatabase.EchoInfo = false;

@@ -2,7 +2,7 @@
 	ModuleId="ArenaModule"
 	VersionId="1"
 	Description="Arena layout and objects"
-	Dependencies="AppCore=1,GameAssets=1"
+	Dependencies="AppCore=1,GameAssets=1,Utility=1"
 	Group="game"
 	ScriptFile="main.cs"
 	CreateFunction="create"

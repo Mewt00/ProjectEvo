@@ -4,6 +4,7 @@
 
 function Utility::create( %this )
 {
+	echo("load utility");
 	exec("./scripts/Healthbar.cs");
 }
     

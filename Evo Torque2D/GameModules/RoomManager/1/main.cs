@@ -24,32 +24,16 @@ function RoomManager::initialize( %this)
 	
 	mainWindow.setCameraSize( $roomWidth, $roomHeight );
 	
-	/*// load some scripts and variables
+	// load some scripts and variables
     //exec("./scripts/arena.cs");
-    //exec("./titleScreenGUI.cs");
-    exec("./roomCompleteGUI.cs");
-    exec("./roomDefeatGUI.cs");
-    exec("./scripts/behaviors/menus/GlobalControls.cs");
-	
-	enableXInput();
-		$enableDirectInput = true;
-		activateDirectInput();
-	
-	echo("Xinput:");
-	echoInputState();
+    //exec("./roomCompleteGUI.cs");
+    //exec("./roomDefeatGUI.cs");
 
-	
-	//GlobalActionMap.bindObj("keyboard", "Escape", "exitGame", %this);
-	//GlobalActionMap.bindObj("keyboard", "M", $pref::Video::fullscreen ^= !$pref::Video::fullScreen, %this);
-	
-	//%this.goToTitleScreen( );*/
 	
 	//Lasting Variables
 	%this.CurrentLevel = 0;
 	%this.CurrentChromosome = 0;
-	
-	//alxStop($titleMusicHandle);
-	
+		
 	echo("RoomManager.main: Creating GeneticAlgorithm instance");
 	//TODO Possible wasted memory, genAlg never destroyed but new GeneticAlgorithm object is assigned
 	$genAlg = new GeneticAlgorithm();
@@ -66,10 +50,8 @@ function RoomManager::create( %this )
 	
     // load some scripts and variables
     //exec("./scripts/arena.cs");
-    exec("./titleScreenGUI.cs");
     exec("./roomCompleteGUI.cs");
     exec("./roomDefeatGUI.cs");
-    //exec("./scripts/behaviors/menus/GlobalControls.cs");
 	exec("./scripts/behaviors/controls/InGameMenuControls.cs");
 	
 	enableXInput();
@@ -88,21 +70,9 @@ function RoomManager::create( %this )
 	%this.exitMenu.addBehavior(%menuControls);
 	
 	%this.initialize();
-    /*GlobalActionMap.bindObj("keyboard", "Escape", "exitGame", %this);
+    //GlobalActionMap.bindObj("keyboard", "Escape", "exitGame", %this);
 	//GlobalActionMap.bindObj("keyboard", "M", "toggleFullscreen", %this);
-	
-	//%this.goToTitleScreen( );
-	
-	//Lasting Variables
-	%this.CurrentLevel = 0;
-	%this.CurrentChromosome = 0;
-	
-	//alxStop($titleMusicHandle);
-	
-	echo("RoomManager.main: Creating GeneticAlgorithm instance");
-	$genAlg = new GeneticAlgorithm();
-	
-	%this.startNextLevel();*/
+
 }
     
 //-----------------------------------------------------------------------------
@@ -138,24 +108,6 @@ function RoomManager::startNextLevel( %this )
 	
 	%this.currentArena.currLevel = %this.CurrentLevel;
 	%this.currentArena.currChromosome = %this.nextChromosome;
-	
-	/*%gameArena = new SceneObject()
-	{
-		class = "Arena";
-		myManager = %this;
-		currLevel = %this.CurrentLevel;
-		currChromosome = %this.nextChromosome; //TODO next v current?
-	};
-	
-	%arenaScene = new Scene();
-	//%arenaScene.setDebugOn("collision");
-	%arenaScene.layerSortMode0 = "Newest";
-	%arenaScene.add(%gameArena);
-	%gameArena.buildArena( );
-	
-	mainWindow.setScene( %arenaScene );
-	
-	%this.currentArena = %gameArena;*/
 	
 	%this.currentArena.nextArenaWave();
 }
@@ -281,7 +233,7 @@ function RoomManager::runNextRoomGenAlg( %this )
   
 function RoomManager::goToRoomCompleteScreen( %this )
 {	
-	%this.nextChromosome = %this.runNextRoomGenAlg();
+	/*%this.nextChromosome = %this.runNextRoomGenAlg();
 
 	%completeRoomScene = new Scene();
 	%completeRoomScene.layerSortMode0 = "Newest";
@@ -293,23 +245,9 @@ function RoomManager::goToRoomCompleteScreen( %this )
 		myManager = %this;
 	};
 		 
-	%gui_roomCompleteScreen.openScreen(%completeRoomScene);
+	%gui_roomCompleteScreen.openScreen(%completeRoomScene);*/
 }   
 
-//-----------------------------------------------------------------------------
-
-function RoomManager::endRoomTitleScreen( %this )
-{	
-	alxStopAll();
-	%this.startNextLevel();
-}
- 
-//-----------------------------------------------------------------------------
-  
-function RoomManager::endRoomCompleteScreen( %this )
-{	
-	%this.startNextLevel();
-}
  
 //-----------------------------------------------------------------------------
   

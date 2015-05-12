@@ -135,6 +135,7 @@ function Player::setupControls( %this )
  	%controls = PlayerMovementControlsBehavior.createInstance();
 	%this.addBehavior(%controls);
 	
+	new ActionMap(aimControlActionMap);
  	%aimer = PlayerAimControlsBehavior.createInstance();
 	%this.addBehavior(%aimer);
 	
@@ -299,6 +300,7 @@ function Player::onRemove( %this )
 	echo("before:");
 	echo(isObject(controlActionMap));
 	controlActionMap.delete();
+	aimControlActionMap.delete();
 	echo("after delete?");
 	echo(isObject(controlActionMap));
 	%this.clearBehaviors();

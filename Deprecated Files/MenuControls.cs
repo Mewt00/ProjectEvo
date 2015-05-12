@@ -36,6 +36,13 @@ function MenuControlBehavior::changeRoom(%this, %val)
 		if(%this.owner.myManager != 0)
 		{
 			%this.owner.myManager.endRoomTitleScreen();
+			/*
+			function RoomManager::endRoomTitleScreen( %this )
+			{	
+				alxStopAll();
+				%this.startNextLevel();
+			}
+			*/
 			GlobalActionMap.unbindObj(getWord(%this.enterKey, 0), getWord(%this.enterKey, 1), %this);
 			//%this.owner.safeDelete();
 		}

@@ -61,7 +61,8 @@ function InGameMenuControlsBehavior::exitGame(%this, %val)
 		mainWindow.delete();
 		inGameMenuActionMap.pop();
 		//inGameMenuActionMap.delete();
-		alxStop($roomMusicHandle);
+		//alxStop($roomMusicHandle);
+		alxStopAll();
 		Canvas.pushDialog(MenuDialog);
 		$titleMusicHandle = alxPlay("GameAssets:mainMenuMusic");
 	}

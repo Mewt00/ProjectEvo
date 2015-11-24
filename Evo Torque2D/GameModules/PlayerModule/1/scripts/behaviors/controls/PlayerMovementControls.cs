@@ -27,6 +27,7 @@ if (!isObject(PlayerMovementControlsBehavior))
 	%template.addBehaviorField(rightKey, "Key to bind to right movement", keybind, "keyboard D");
 	
 	%template.addBehaviorField(blockKey, "", keybind, "keyboard F");
+	%template.addBehaviorField(dashKey, "", keybind, "keyboard space");
 	
 	//controlActionMap.push();
 }
@@ -46,19 +47,23 @@ function PlayerMovementControlsBehavior::onBehaviorAdd(%this)
 	controlActionMap.bindObj(getWord(%this.rightKey, 0), getWord(%this.rightKey, 1), "moveRight", %this);
 	
 	controlActionMap.bindObj("keyboard", %this.blockKey, "pressBlock", %this);
+	controlActionMap.bindObj("keyboard", %this.dashKey, "pressDash", %this);
 
 	//Xbox XInput mapping
 	controlActionMap.bindObj("gamepad0", "thumblx", "LAnalogX", %this);
 	controlActionMap.bindObj("gamepad0", "thumbly", "LAnalogY", %this);	
 	
 	controlActionMap.bindObj("gamepad0", "triggerl", "pressBlock", %this);
+	controlActionMap.bindObj("gamepad0", "btn_l", "pressDash", %this);
 
 	%this.up = 0;
 	%this.down = 0;
 	%this.left = 0;
 	%this.right = 0;
 	
-   // %this.setUpdateCallback(true);
+	%this.moveAngle = 0;
+	
+	%this.setUpdateCallback(true);
 	
 	%this.wallCheckDist = 2;
 	
@@ -111,7 +116,7 @@ function PlayerMovementControlsBehavior::onBehaviorRemove(%this)
     if (!isObject(controlActionMap))
        return;
 
-	//%this.owner.setUpdateCallback(true);
+	
 	
 	//TODO::Are the Unbindings needed?
 
@@ -374,7 +379,6 @@ function PlayerMovementControlsBehavior::moveDownRight(%this, %val)
 }*/
 
 //------------------------------------------------------------------------------------
-//------------------------------------------------------------------------------------
 
 function PlayerMovementControlsBehavior::pressBlock(%this, %val)
 {
@@ -424,6 +428,84 @@ function PlayerMovementControlsBehavior::blockTick(%this)
 		%this.owner.blockCount++;
 		%this.blockTickSchedule = schedule(%this.owner.blockTickTime, 0, "PlayerMovementControlsBehavior::blockTick", %this);
 	}
+}
+
+//------------------------------------------------------------------------------------
+
+function PlayerMovementControlsBehavior::pressDash(%this, %val)
+{
+	if(%val == 1)
+	{
+		if((! %this.owner.isDashing) && (! %this.owner.tarred))
+		{
+			%this.findDashAngle();
+			
+			%newDashTrail = new CompositeSprite()
+			{
+				class = "PlayerDash";
+				dashAngle = %this.moveAngle;
+			};
+				
+			%this.owner.getScene().add( %newDashTrail );
+			%newDashTrail.setPosition(%this.owner.getWorldPoint(-20 * $pixelsToWorldUnits, 0) );
+			
+			
+			%this.owner.isDashing = true;
+			%this.owner.currDashDirection = %this.moveAngle;
+			%this.owner.setLinearVelocityPolar(%this.moveAngle, %this.owner.dashSpeed);	
+			
+			%this.dashSchedule = schedule(%this.owner.dashLength, 0, "PlayerAimControlsBehavior::endDash", %this);
+			
+			%this.owner.dashCount++;
+		
+			%this.owner.setSpriteBlendAlpha(0.8);
+		}
+	}
+} 
+
+function PlayerMovementControlsBehavior::findDashAngle(%this)
+{
+	
+	if(%this.up && %this.left)
+	{
+		%this.moveAngle = 135;
+	}
+	if(%this.up && %this.right)
+	{
+		%this.moveAngle = 45;
+	}
+	if(%this.down && %this.left)
+	{
+		%this.moveAngle = 225;
+	}
+	if(%this.down && %this.right)
+	{
+		%this.moveAngle = 315;
+	}
+	if(%this.up && !%this.left && !%this.right)
+	{
+		%this.moveAngle = 90;
+	}
+	if(%this.down && !%this.left && !%this.right)
+	{
+		%this.moveAngle = 270;
+	}
+	if(%this.left && !%this.up && !%this.down)
+	{
+		%this.moveAngle = 180;
+	}
+	if(%this.right && !%this.up && !%this.down)
+	{
+		%this.moveAngle = 0;
+	}
+	
+}
+
+function PlayerMovementControlsBehavior::endDash(%this)
+{
+	%this.owner.isDashing = false;	
+	%this.owner.setLinearVelocityPolar(0, 0);	
+	%this.owner.setSpriteBlendAlpha(1);
 }
 
 //------------------------------------------------------------------------------------

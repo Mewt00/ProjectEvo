@@ -1,20 +1,12 @@
 //-----------------------------------------------------------------------------
 // Basic GlobalControlBehavior
 //-----------------------------------------------------------------------------
-
+echo("exec ingamemenucontrols");
 if (!isObject(InGameMenuControlsBehavior))
 {
 	echo("inGameMenuActionMap");
     %template = new BehaviorTemplate(InGameMenuControlsBehavior);
 	
-	if(isObject(inGameMenuActionMap))
-	{
-		echo("inGameMenuActionMap being popped and deleted");
-		inGameMenuActionMap.pop();
-		inGameMenuActionMap.delete();
-	}
-	
-	//new ActionMap(inGameMenuActionMap);
 	
     %template.friendlyName = "Menu Controls";
     %template.behaviorType = "Input";
@@ -26,9 +18,20 @@ if (!isObject(InGameMenuControlsBehavior))
 function InGameMenuControlsBehavior::onBehaviorAdd(%this)
 {
 	echo("ingame object?: " @ isObject(inGameMenuActionMap));
+	/*if(isObject(inGameMenuActionMap))
+	{
+		echo("inGameMenuActionMap being popped and deleted");
+		inGameMenuActionMap.pop();
+		inGameMenuActionMap.delete();
+	}*/
+	
 	
     if (!isObject(inGameMenuActionMap))
-       return;
+	{
+       //return;
+	   echo("inGameMenuActionMap being created");
+	   new ActionMap(inGameMenuActionMap);
+	}
    
    	echo("ingame object?: " @ getWord(%this.exitKey, 0));
 
@@ -42,6 +45,7 @@ function InGameMenuControlsBehavior::onBehaviorAdd(%this)
 
 function InGameMenuControlsBehavior::onBehaviorRemove(%this)
 {
+	echo("behavior removed");
     if (!isObject(inGameMenuActionMap))
        return;
 
@@ -59,6 +63,7 @@ function InGameMenuControlsBehavior::exitGame(%this, %val)
 	{
 		echo("RoomManager.exitGame()");
 		mainWindow.delete();
+		echo("before behavior removed by pop");
 		inGameMenuActionMap.pop();
 		//inGameMenuActionMap.delete();
 		//alxStop($roomMusicHandle);

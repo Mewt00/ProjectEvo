@@ -5,6 +5,7 @@
 
 function ToolNode::CreateInstance(%emyOwner, %type, %posX, %posY, %toolOrientation)  
 {  
+echo("Node Error Error Error Error!");
     %r = new SceneObject()  
 	{  
 		class = "ToolNode";  
@@ -42,7 +43,8 @@ function ToolNode::initialize(%this)
 	
 	%this.setupSprite();
 	
-	if(%this.toolType $= %this.owner.blobToolName) {
+	if(%this.toolType $= %this.owner.blobToolName) 
+	{
 		%this.blobBonus();
 	}
 	
@@ -74,7 +76,8 @@ function ToolNode::setupSprite( %this )
 		
 		%this.owner.addSprite(%this.bodyPosX*%this.myWidth SPC %this.bodyPosY*%this.myHeight);
 		
-		if(%this.toolType $= %this.owner.blobToolName) {
+		if(%this.toolType $= %this.owner.blobToolName) 
+		{
 			%this.setupSpriteBlob();
 		}
 

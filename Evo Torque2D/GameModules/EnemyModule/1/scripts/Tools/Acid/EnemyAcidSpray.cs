@@ -25,7 +25,7 @@ function EnemyAcidSpray::initialize(%this)
 	
 	
 	%this.setBullet(true);
-	%this.sizeRatio = $pixelToWorldRatio;
+	%this.sizeRatio = $pixelsToWorldUnits;
 	%this.myWidth = 192 * %this.sizeRatio;
 	%this.myHeight = 64 * %this.sizeRatio;
 	

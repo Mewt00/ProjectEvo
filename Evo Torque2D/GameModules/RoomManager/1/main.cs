@@ -2,19 +2,53 @@
 // Room manager, sets up canvas and arena
 //-----------------------------------------------------------------------------
 
-
 //globals
-//$roomWidth = 1280;
-//$roomHeight = 960;
+//Ideal resolution - 1366 x 768
+//  				 16:9
 $roomWidth = 160;
-$roomHeight = 120;
-$pixelToWorldRatio = $roomWidth/1600;
+$roomHeight = 90;
+//How many pixels in one world unit(m)
+$worldUnitsToPixels = 15;
+$pixelsToWorldUnits = 1/$worldUnitsToPixels;
+//$edgeWidth = 30 * $pixelsToWorldUnits;
 //TODO Make it a ScriptObject?
+//---------------------------------------------------------------------
+
+function RoomManager::create( %this )
+{   	
+	//echo("handle: " @ $titleMusicHandle);
+	
+    // load some scripts and variables
+    //exec("./scripts/arena.cs");
+    //exec("./roomCompleteGUI.cs");
+    exec("./roomDefeatGUI.cs");
+	exec("./scripts/behaviors/controls/InGameMenuControls.cs");
+	RoomManager.add( TamlRead("./gui/DefeatDialog.gui.taml") );
+	
+	enableXInput();
+		$enableDirectInput = true;
+		activateDirectInput();
+	
+	echo("Xinput:");
+	echoInputState();
+	
+	//new ActionMap(inGameMenuActionMap);//? Why is this made here
+	echo("exitMenu object? " @ isObject(%this.exitMenu));
+	%this.menuControls = InGameMenuControlsBehavior.createInstance();
+	echo("menuControls : " @ isObject(%this.menuControls));
+	%this.exitMenu = new ScriptObject();
+	echo("exitMenu object? " @ isObject(%this.exitMenu));
+	%this.exitMenu.addBehavior(%this.menuControls);
+	
+	%this.initialize();
+
+}
+
 //---------------------------------------------------------------------
 
 function RoomManager::initialize( %this)
 {
-	echo("Object?:" @ isObject(%this));
+	//echo("Object?:" @ isObject(%this));
 	setRandomSeed(getRealTime());
 	
 	//Set up Arena Scene Window
@@ -26,7 +60,6 @@ function RoomManager::initialize( %this)
 	
 	// load some scripts and variables
     //exec("./scripts/arena.cs");
-    //exec("./roomCompleteGUI.cs");
     //exec("./roomDefeatGUI.cs");
 
 	
@@ -41,75 +74,45 @@ function RoomManager::initialize( %this)
 	%this.startArena();
 	
 }
-
-//---------------------------------------------------------------------
-
-function RoomManager::create( %this )
-{   	
-	echo("handle: " @ $titleMusicHandle);
-	
-    // load some scripts and variables
-    //exec("./scripts/arena.cs");
-    exec("./roomCompleteGUI.cs");
-    exec("./roomDefeatGUI.cs");
-	exec("./scripts/behaviors/controls/InGameMenuControls.cs");
-	
-	enableXInput();
-		$enableDirectInput = true;
-		activateDirectInput();
-	
-	echo("Xinput:");
-	echoInputState();
-	
-	new ActionMap(inGameMenuActionMap);
-	echo("exitMenu object? " @ isObject(%this.exitMenu));
-	%menuControls = InGameMenuControlsBehavior.createInstance();
-	echo("menuControls : " @ isObject(%menuControls));
-	%this.exitMenu = new ScriptObject();
-	echo("exitMenu object? " @ isObject(%this.exitMenu));
-	%this.exitMenu.addBehavior(%menuControls);
-	
-	%this.initialize();
-    //GlobalActionMap.bindObj("keyboard", "Escape", "exitGame", %this);
-	//GlobalActionMap.bindObj("keyboard", "M", "toggleFullscreen", %this);
-
-}
     
 //-----------------------------------------------------------------------------
   
 function RoomManager::startArena( %this )
 {
 	%this.CurrentLevel++;
-	
-	%gameArena = new SceneObject()
+	%this.currentArena = new SceneObject()
 	{
 		class = "Arena";
 		myManager = %this;
 		currLevel = %this.CurrentLevel;
-		currChromosome = %this.nextChromosome; //TODO next v current?
+		currChromosome = 
+			"0 0 0 0 0 0 1" SPC "0 0 0 0 0 0 1";//%this.nextChromosome; //TODO next v current?
 	};
 	
 	%arenaScene = new Scene();
 	//%arenaScene.setDebugOn("collision");
 	%arenaScene.layerSortMode0 = "Newest";
-	%arenaScene.add(%gameArena);
-	%gameArena.buildArena( );
+	%arenaScene.add(%this.currentArena);
+	%this.currentArena.buildArena();
 	
 	mainWindow.setScene( %arenaScene );
 	
-	%this.currentArena = %gameArena;
 }	
 	
 //-----------------------------------------------------------------------------
   
 function RoomManager::startNextLevel( %this )
 {
+	echo("Start next level entered");
 	%this.CurrentLevel++;
 	
+	//%this.runNextRoomGenAlg();
+	
 	%this.currentArena.currLevel = %this.CurrentLevel;
-	%this.currentArena.currChromosome = %this.nextChromosome;
+	//%this.currentArena.currChromosome = %this.nextChromosome;
 	
 	%this.currentArena.nextArenaWave();
+	//%this.nextChromosome = %this.currentArena.currChromosome;
 }
 
 //-----------------------------------------------------------------------------
@@ -119,6 +122,8 @@ function RoomManager::endCurrentLevel( %this )
 	echo("RoomManager.main: Room finished!");
 	
 	%this.writeRoomSummationFile();	
+	
+	$genAlg.run();
 
 	/*//%this.currentArena.player.clearBehaviors();
 	//%this.currentArena.getScene().remove(%this.currentArena.player);
@@ -130,7 +135,8 @@ function RoomManager::endCurrentLevel( %this )
 	
 	//TODO Lag/Jumpiness around spawn
 	//%this.nextChromosome = %this.runNextRoomGenAlg();
-	%this.schedule(32, "runNextRoomGenAlg");
+	//%this.runNextRoomGenAlg();
+	//%this.schedule(32, "runNextRoomGenAlg");
 	%this.schedule(320, "startNextLevel");
 }
 
@@ -220,7 +226,8 @@ function RoomManager::writeRoomSummationFile( %this )
 function RoomManager::runNextRoomGenAlg( %this )
 {
 	echo("RoomManager.main: GeneticAlgorithm.run()");
-	%chromosome = $genAlg.run();			//call C++ code!
+	//$genAlg.run();
+	%chromosome = $genAlg.retrieveChromosome();			//call C++ code!
 	
 	echo("RoomManager.main: GeneticAlgorithm. run successful!");
 	
@@ -228,51 +235,6 @@ function RoomManager::runNextRoomGenAlg( %this )
 	
 	//return %chromosome;
 }
- 
-//-----------------------------------------------------------------------------
-  
-function RoomManager::goToRoomCompleteScreen( %this )
-{	
-	/*%this.nextChromosome = %this.runNextRoomGenAlg();
-
-	%completeRoomScene = new Scene();
-	%completeRoomScene.layerSortMode0 = "Newest";
-	mainWindow.setScene( %completeRoomScene );
-	
-	%gui_roomCompleteScreen = new SceneObject()
-	{
-		class = "RoomCompleteGUI";
-		myManager = %this;
-	};
-		 
-	%gui_roomCompleteScreen.openScreen(%completeRoomScene);*/
-}   
-
- 
-//-----------------------------------------------------------------------------
-  
-function RoomManager::goToRoomDefeatScreen( %this, %furthestLevel, %killerChromosome, %killBodyRadius )
-{	
-	//%this.nextChromosome = %this.runNextRoomGenAlg();
-
-	echo("Main goToDefeat" SPC %killerChromosome);
-	
-	%defeatRoomScene = new Scene();
-	%defeatRoomScene.layerSortMode0 = "Newest";
-	mainWindow.setScene( %defeatRoomScene );
-	
-	%gui_roomDefeatScreen = new SceneObject()
-	{
-		class = "RoomDefeatGUI";
-		myManager = %this;
-		lastLevel = %furthestLevel;
-		killerChromosome = %killerChromosome;
-		killBodyRadius = %killBodyRadius;
-	};
-		 
-	%gui_roomDefeatScreen.openScreen(%defeatRoomScene);
-}   
-
 //-----------------------------------------------------------------------------
 
 function RoomManager::playerDies( %this, %killerChromosome, %killBodyRadius )
@@ -282,6 +244,46 @@ function RoomManager::playerDies( %this, %killerChromosome, %killBodyRadius )
 	%this.schedule(320, "goToRoomDefeatScreen", %this.CurrentLevel, %killerChromosome, %killBodyRadius);  
 	//%this.goToRoomDefeatScreen(%killerChromosome, %killBodyRadius);
 	%this.CurrentLevel = 0;
+} 
+
+//-----------------------------------------------------------------------------
+  
+function RoomManager::goToRoomDefeatScreen( %this, %furthestLevel, %killerChromosome, %killBodyRadius )
+{	
+	//%this.nextChromosome = %this.runNextRoomGenAlg();
+
+	echo("Main goToDefeat" SPC %killerChromosome);
+	
+	
+	
+	%defeatRoomScene = new Scene();
+	%defeatRoomScene.layerSortMode0 = "Newest";
+	mainWindow.setScene( %defeatRoomScene );
+	
+	%defeatInfoScreen = new SceneObject()
+	{
+		class = "RoomDefeatGUI";
+		myManager = %this;
+		lastLevel = %furthestLevel;
+		killerChromosome = %killerChromosome;
+		killBodyRadius = %killBodyRadius;
+	};
+		 
+	%defeatInfoScreen.openScreen(%defeatRoomScene);
+	
+	Canvas.pushDialog(DefeatDialog);
+}   
+
+//-----------------------------------------------------------------------------
+
+function ContinueButton::onClick(%this)
+{
+    echo("Continue click");
+	//mainWindow.delete();
+	alxStopAll();
+	Canvas.pushDialog(MenuDialog);
+	$titleMusicHandle = alxPlay("GameAssets:mainMenuMusic");
+	echo("End of ContinueButton click");
 }
 
 //-----------------------------------------------------------------------------
@@ -312,13 +314,18 @@ function RoomManager::exitGame(%this, %val)
 
 function RoomManager::destroy(%this)
 {
-	echo("exitMenu object? " @ isObject(%this.exitMenu));
-	%this.exitMenu.clearBehaviors();
-	//%this.exitMenu.safeDelete();
-	echo("exitMenu object? " @ isObject(%this.exitMenu));
-	%this.currentArena.getScene().clear();
-	//%this.currentArena.safeDelete();
 	echo("ingame object?: " @ isObject(inGameMenuActionMap));
+	echo("exitMenu object? " @ isObject(%this.exitMenu));
+	echo("exitMenu object? " @ isObject(%this.menuControls));
+	echo("before behavior removed by clearBehaviors");
+	%this.exitMenu.clearBehaviors();
+	%this.exitMenu.delete();
+	echo("ingame object?: " @ isObject(inGameMenuActionMap));
+	echo("exitMenu object? " @ isObject(%this.exitMenu));
+	if(isObject(%this.currentArena))
+		%this.currentArena.getScene().clear();
+	//%this.currentArena.safeDelete();
+	//echo("ingame object?: " @ isObject(inGameMenuActionMap));
 	echo("Reached RoomManager destroy");
 }
 

@@ -20,7 +20,7 @@ function EnemyBladeStrikeEffect::initialize(%this)
 	%this.driftSpeed = 8;	
 	%this.lifeSpan = 0.6 * 1000;	//ms
 	
-	%this.sizeRatio = $pixelToWorldRatio;
+	%this.sizeRatio = $pixelsToWorldUnits;
 	%this.myWidth = 70 * %this.sizeRatio;
 	%this.myHeight = 70 * %this.sizeRatio;
 	

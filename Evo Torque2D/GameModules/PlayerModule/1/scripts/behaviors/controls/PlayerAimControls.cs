@@ -22,7 +22,7 @@ if (!isObject(PlayerAimControlsBehavior))
 
   	//%template.addBehaviorField(fireKey, "", keybind, "keyboard space");
 	%template.addBehaviorField(switchKey, "", keybind, "keyboard E");
-	%template.addBehaviorField(dashKey, "", keybind, "keyboard space");
+	//%template.addBehaviorField(dashKey, "", keybind, "keyboard space");
 }
 
 function PlayerAimControlsBehavior::onBehaviorAdd(%this)
@@ -38,7 +38,7 @@ function PlayerAimControlsBehavior::onBehaviorAdd(%this)
 	
 	//aimControlActionMap.bindObj(getWord(%this.fireKey, 0), getWord(%this.fireKey, 1), "pressFire", %this);
 	aimControlActionMap.bindObj("keyboard", %this.switchKey, "switchAttackMode", %this);
-	aimControlActionMap.bindObj("keyboard", %this.dashKey, "pressDash", %this);
+	//aimControlActionMap.bindObj("keyboard", %this.dashKey, "pressDash", %this);
 	
 	/*//diagonal
     GlobalActionMap.bindObj(getWord(%this.ulKey, 0), getWord(%this.ulKey, 1), "faceUL", %this);
@@ -66,12 +66,12 @@ function PlayerAimControlsBehavior::onBehaviorAdd(%this)
 	%this.rotation = 90;
 	
 	//shot barrel offset (instead of bullet coming out of center of player)	
-	%this.barrelXoffset = 55*%this.owner.sizeRatio;
-	%this.barrelYoffset = -42*%this.owner.sizeRatio;
+	%this.barrelXoffset = 60 * $pixelsToWorldUnits;//*%this.owner.myWidth;
+	%this.barrelYoffset = -40 * $pixelsToWorldUnits;//*%this.owner.myHeight;
 	
 	//blade offset (instead of strike effect coming out of center of player)	
-	%this.bladeXoffset = 100*%this.owner.sizeRatio;
-	%this.bladeYoffset = 30*%this.owner.sizeRatio;
+	%this.bladeXoffset = 75 * $pixelsToWorldUnits;
+	%this.bladeYoffset = 30 * $pixelsToWorldUnits;
 	
 	%this.attackMode = "shoot";
 	
@@ -119,7 +119,7 @@ function PlayerAimControlsBehavior::onBehaviorRemove(%this)
   
 function PlayerAimControlsBehavior::onUpdate(%this)
 {
-	echo(" x , y    " @ mAbs(%this.xFace) @ " , " @ mAbs(%this.yFace));
+	//echo(" x , y    " @ %this.owner.getPosition());
 	%this.updateFacingDirection();
 	
 	if(%this.upFace || %this.leftFace || %this.downFace || %this.rightFace || mAbs(%this.xFace) + mAbs(%this.yFace) > 0)
@@ -153,12 +153,12 @@ function PlayerAimControlsBehavior::updateFacingDirection(%this)
 	//%tempLeft = %this.leftFace;
 	//%tempRight = %this.rightFace;	
 	
-	echo("up, down, left, right");
+	/*echo("up, down, left, right");
 	echo(%this.upFace);
 	echo(%this.downFace);
 	echo(%this.leftFace);
 	echo(%this.rightFace);
-	echo("sticks: " @ mATan(%this.xFace, %this.yFace));
+	echo("sticks: " @ mATan(%this.xFace, %this.yFace));*/
 	
 	if(%this.upFace && %this.leftFace)
 	{
@@ -261,7 +261,7 @@ function PlayerAimControlsBehavior::updateFacingDirection(%this)
 		}
 	}*/
 	
-	echo("Rotation: " @ %this.rotation);
+	//echo("Rotation: " @ %this.rotation);
 	%this.owner.setAngle(%this.rotation);
 }
 
@@ -384,7 +384,7 @@ function PlayerAimControlsBehavior::faceUL(%this, %val)
 
 function PlayerAimControlsBehavior::switchAttackMode(%this, %val)
 {
-	//echo("inside of press fire with val: " @ %val);
+	echo("inside of press fire with val: " @ %val);
 	if(%val == 1)
 	{
 		//if (!isEventPending(%this.modeChangeSchedule))  %this.modeChangeSchedule = %this.schedule(5000, "switchAttackMode", 1);
@@ -421,7 +421,7 @@ function PlayerAimControlsBehavior::tryAttack(%this)
 
 function PlayerAimControlsBehavior::tryFire(%this)
 {
-	echo("inside of try fire");
+	//echo("inside of try fire");
 	//if(getEventTimeLeft(%this.fireCooldownTime) <= 0)
 	if(%this.fireCooledDown)
 	{
@@ -448,7 +448,7 @@ function PlayerAimControlsBehavior::tryFire(%this)
 		};
 		
 		%this.owner.getScene().add( %newFlash );
-		%newFlash.setPosition(%this.owner.getWorldPoint(%this.barrelXoffset + 23*%this.owner.sizeRatio, %this.barrelYoffset - 6*%this.owner.sizeRatio) );
+		%newFlash.setPosition(%this.owner.getWorldPoint(%this.barrelXoffset, %this.barrelYoffset) );
 		
 		%this.fireCooledDown = false;
 		schedule(%this.owner.fireCooldown, 0, "PlayerAimControlsBehavior::fireCooldownReached", %this);
@@ -467,7 +467,7 @@ function PlayerAimControlsBehavior::fireCooldownReached(%this)
 
 function PlayerAimControlsBehavior::pressMelee(%this, %val)
 {
-	echo("inside of press melee with val: " @ %val);
+	//echo("inside of press melee with val: " @ %val);
 	if(%val == 1)
 	{
 		%this.strikeHeld = true;
@@ -480,7 +480,7 @@ function PlayerAimControlsBehavior::pressMelee(%this, %val)
 
 function PlayerAimControlsBehavior::tryMelee(%this)
 {
-	echo("inside of try melee");
+	//echo("inside of try melee");
 	//if(getEventTimeLeft(%this.strikeCooldownTime) <= 0)
 	if(%this.strikeCooledDown)
 	{
@@ -497,8 +497,8 @@ function PlayerAimControlsBehavior::tryMelee(%this)
 		%newStriker.setPosition(%this.owner.getWorldPoint(%this.bladeXoffset, %this.bladeYoffset) );
 		
 		%this.owner.setSpriteAnimation("GameAssets:playerStrikingAnim", 0);
-		%this.owner.setSpriteSize(320*%this.owner.sizeRatio, 164*%this.owner.sizeRatio);
-		%this.owner.setSpriteLocalPosition(0, 17*%this.owner.sizeRatio);
+		%this.owner.setSpriteSize(320 * $pixelsToWorldUnits, 164 * $pixelsToWorldUnits);
+		%this.owner.setSpriteLocalPosition(0, 17 * $pixelsToWorldUnits);
 		%this.owner.schedule(250, "setupSprite");
 		
 		%this.strikeCooledDown = false;
@@ -530,7 +530,7 @@ function PlayerAimControlsBehavior::pressDash(%this, %val)
 			};
 				
 			%this.owner.getScene().add( %newDashTrail );
-			%newDashTrail.setPosition(%this.owner.getWorldPoint(-20*%this.owner.sizeRatio, 0) );
+			%newDashTrail.setPosition(%this.owner.getWorldPoint(-20 * $pixelsToWorldUnits, 0) );
 			
 			
 			%this.owner.isDashing = true;

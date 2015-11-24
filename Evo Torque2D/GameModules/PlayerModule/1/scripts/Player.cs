@@ -25,14 +25,12 @@ function Player::initialize(%this)
 	//Stats
 	%this.fullHealth = 150;
 	%this.health = %this.fullHealth;
-	%this.sizeRatio = $pixelToWorldRatio;
-	%this.myWidth = 210 * %this.sizeRatio;
-	%this.myHeight = 169 * %this.sizeRatio;
+	%this.myWidth = 210 * $pixelsToWorldUnits;
+	%this.myHeight = 164 * $pixelsToWorldUnits;
 	
 	%this.baseWalkSpeed = 40;
 	%this.walkSpeed = %this.baseWalkSpeed;
 	%this.tarred = false;
-	%this.setPosition(0, 25);
 	
 	%this.myShotsContainer = new SimSet();		//tracker for shot objects on screen
 	
@@ -76,7 +74,7 @@ function Player::initialize(%this)
 		class = "Healthbar";
 		owner = %this;
 		xOffset = 0;
-		yOffset = 150*%this.sizeRatio;
+		yOffset = 150 * $pixelsToWorldUnits;
 		curved = true;
 	};
 	
@@ -245,7 +243,7 @@ function Player::tar( %this, %slowEffect, %duration )
 	{
 		//%this.addSprite(1, 0);
 		//%this.setSpriteImage("GameAssets:playertarred", 0);
-		//%this.setSpriteSize(184 * %this.sizeRatio, 127 * %this.sizeRatio);
+		//%this.setSpriteSize(184 * $pixelsToWorldUnits, 127 * $pixelsToWorldUnits);
 		
 		%this.tarred = true;
 	}

@@ -35,6 +35,14 @@ function RoomDefeatControls::changeRoom(%this, %val)
 	{
 		if(%this.owner.myManager != 0)
 		{
+		/*	echo("RoomManager.exitGame()");
+		mainWindow.delete();
+		inGameMenuActionMap.pop();
+		//inGameMenuActionMap.delete();
+		//alxStop($roomMusicHandle);
+		alxStopAll();
+		Canvas.pushDialog(MenuDialog);
+		$titleMusicHandle = alxPlay("GameAssets:mainMenuMusic");*/
 			
 			%this.owner.myScene.schedule(320, "clear");  
 			%this.owner.myManager.goToTitleScreen();

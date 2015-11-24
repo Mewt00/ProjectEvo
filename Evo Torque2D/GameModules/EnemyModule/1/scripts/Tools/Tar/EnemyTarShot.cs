@@ -17,7 +17,7 @@ function EnemyTarShot::initialize(%this)
 	
 	%this.shotSpeed = 55;		
 	%this.setBullet(true);
-	%this.sizeRatio = $pixelToWorldRatio;
+	%this.sizeRatio = $pixelsToWorldUnits;
 	%this.myWidth = 38 * %this.sizeRatio;
 	%this.myHeight = 24 * %this.sizeRatio;
 	%this.travelTime = (%this.distTotal/%this.shotSpeed)*1000;

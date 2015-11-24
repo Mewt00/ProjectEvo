@@ -19,11 +19,12 @@ function RoomDefeatGUI::openScreen(%this, %scene)
     %scene.add( %background );
 	%this.myScene = %scene;
 	
-	exec("./scripts/behaviors/menus/RoomDefeatControls.cs");
 	
-	%controls = RoomDefeatControls.createInstance();
-	%controls.enterKey = "keyboard enter";
-	%this.addBehavior(%controls);
+	//exec("./scripts/behaviors/menus/RoomDefeatControls.cs");
+	
+	//%controls = RoomDefeatControls.createInstance();
+	//%controls.enterKey = "keyboard enter";
+	//%this.addBehavior(%controls);
 	
 	%this.addRoomFont(-$roomWidth*0.2375, $roomHeight*0.0996, %this.lastLevel);
 	%this.addKillerEnemy(-$roomWidth*0.2375, -$roomHeight*0.163);
@@ -33,10 +34,15 @@ function RoomDefeatGUI::openScreen(%this, %scene)
 
 function RoomDefeatGUI::addRoomFont(%this, %x, %y, %text)
 {
-	%this.drawText(%x, %y, %text);
-	%this.drawText(%x + 0.1, %y, %text);
-	%this.drawText(%x + 0.1, %y + 0.1, %text);
-	%this.drawText(%x, %y + 0.1, %text);
+	%this.drawText(-$roomWidth/2, $roomHeight/3, "You have been defeated!");
+	%this.drawText(-$roomWidth/2 + 0.1, $roomHeight/3, "You have been defeated!");
+	%this.drawText(-$roomWidth/2 + 0.1, $roomHeight/3 + 0.1, "You have been defeated!");
+	%this.drawText(-$roomWidth/2, $roomHeight/3 + 0.1, "You have been defeated!");
+	
+	%this.drawText(%x, %y, "On Level " @ %text NL "By ");
+	%this.drawText(%x + 0.1, %y, "On Level " @ %text NL "By ");
+	%this.drawText(%x + 0.1, %y + 0.1, "On Level " @ %text NL "By ");
+	%this.drawText(%x, %y + 0.1, "On Level " @ %text NL "By ");
 }
 
 //-----------------------------------------------------------------------------
@@ -57,7 +63,7 @@ function RoomDefeatGUI::drawText(%this, %x, %y, %text)
 
 function RoomDefeatGUI::addKillerEnemy(%this, %x, %y)
 {
-	%this.spawnEnemyUnit(%this.killerChromosome, %x + (1+%this.killBodyRadius)*64*$pixelToWorldRatio, %y);
+	%this.spawnEnemyUnit(%this.killerChromosome, %x + (1+%this.killBodyRadius)*64*$pixelsToWorldUnits, %y);
 	%this.myScene.add( %font ); 
 }
 

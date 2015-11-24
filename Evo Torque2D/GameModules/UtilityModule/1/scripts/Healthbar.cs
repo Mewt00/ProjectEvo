@@ -21,7 +21,7 @@ function Healthbar::initialize(%this)
 	
     %this.setUpdateCallback(true);
 	
-	%this.sizeRatio = $pixelToWorldRatio;
+	%this.sizeRatio = $pixelsToWorldUnits;
 	
 	%this.segmentWidth = 12 * %this.sizeRatio;
 	%this.segmentHeight = 12 * %this.sizeRatio;

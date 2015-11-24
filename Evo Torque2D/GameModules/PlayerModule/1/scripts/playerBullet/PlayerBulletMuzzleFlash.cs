@@ -11,9 +11,8 @@ function PlayerBulletMuzzleFlash::initialize(%this)
 	%this.setSceneLayer(4);
 	%this.fixedAngle = true;
 		
-	%this.sizeRatio = $pixelToWorldRatio;
-	%this.myWidth = 28 * %this.sizeRatio * 1.5;
-	%this.myHeight = 38 * %this.sizeRatio * 1.5;
+	%this.myWidth = 28 * $pixelsToWorldUnits * 1.5;
+	%this.myHeight = 38 * $pixelsToWorldUnits * 1.5;
 	
 	%this.schedule(200, "safeDelete");
 	
@@ -26,7 +25,7 @@ function PlayerBulletMuzzleFlash::initialize(%this)
 
 function PlayerBulletMuzzleFlash::onUpdate( %this )
 {
-	%this.setPosition(%this.owner.owner.getWorldPoint(%this.owner.barrelXoffset + 27*%this.owner.owner.sizeRatio, %this.owner.barrelYoffset - 6*%this.owner.owner.sizeRatio) );
+	%this.setPosition(%this.owner.owner.getWorldPoint(%this.owner.barrelXoffset + 27 * $pixelsToWorldUnits, %this.owner.barrelYoffset - 6 * $pixelsToWorldUnits) );
 }
 
 //-----------------------------------------------------------------------------

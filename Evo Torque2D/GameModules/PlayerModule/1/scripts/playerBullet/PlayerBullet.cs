@@ -18,9 +18,8 @@ function PlayerBullet::initialize(%this)
 	%this.shotDamage = 10;
 	%this.shotSpeed = 75;		
 	%this.setBullet(true);
-	%this.sizeRatio = $pixelToWorldRatio;
-	%this.myWidth = 39 * %this.sizeRatio;
-	%this.myHeight = 24 * %this.sizeRatio;
+	%this.myWidth = 39 * $pixelsToWorldUnits;
+	%this.myHeight = 24 * $pixelsToWorldUnits;
 	
 	%this.setupSprite();
 		

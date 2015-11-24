@@ -1,4 +1,7 @@
 
+//-----------------------------------------------------------------------------
+//Copyright (c) 2015 RABBAT STUDIOS
+//-----------------------------------------------------------------------------
 
 function MainMenu::create( %this )
 {    
@@ -34,7 +37,7 @@ function MainMenu::destroy( %this )
 function NewGameButton::onClick(%this)
 {
     echo("NewGameButton click");
-    Canvas.popDialog(OptionsDialog);
+    //Canvas.popDialog(OptionsDialog);
 	ModuleDatabase.unloadGroup("game");
 	ModuleDatabase.loadGroup("game");
 	alxStop($titleMusicHandle);

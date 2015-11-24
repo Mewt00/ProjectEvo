@@ -18,7 +18,7 @@ function PlayerBlock::initialize(%this)
 	%this.maxDamage = 100;
 	%this.damage = 0;
 	
-	%this.sizeRatio = $pixelToWorldRatio;
+	%this.sizeRatio = $pixelsToWorldUnits;
 	%this.myWidth = 210 * %this.sizeRatio;
 	%this.myHeight = 210 * %this.sizeRatio;
 	

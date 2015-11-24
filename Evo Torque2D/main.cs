@@ -1,6 +1,6 @@
 
 //-----------------------------------------------------------------------------
-//Copyright (c) 2015 Chubby Bunny, LLC
+//Copyright (c) 2015 RABBAT Studios
 //-----------------------------------------------------------------------------
 
 
@@ -25,7 +25,7 @@ $Scripts::ignoreDSOs = true;
 // The name of the game. Used to form the path to save preferences. Defaults to C++ engine define TORQUE_GAME_NAME
 // if not specified.
 // Appending version string to avoid conflicts with existing versions and other versions.
-setCompanyAndProduct("Chubby Bunny", "ProjectEvo" );
+setCompanyAndProduct("RABBAT Studios", "ProjectEvo" );
 
 // Set module database information echo.
 ModuleDatabase.EchoInfo = false;
@@ -52,15 +52,15 @@ function onExit()
     ModuleDatabase.unloadExplicit( "AppCore" );
 	//ModuleDatabase.unloadGroup( "game" );
 }
-
+/*
 //-----------------------------------------------------------------------------
 
-//function androidBackButton(%val)
-//{
-//	if (%val) {
-//		//Add code here for other options the back button can do like going back a screen.  the quit should happen at your main menu.
+function androidBackButton(%val)
+{
+	if (%val) {
+		//Add code here for other options the back button can do like going back a screen.  the quit should happen at your main menu.
 
-//		quit();
-//	}
+		quit();
+	}
 
-//}
+}*/

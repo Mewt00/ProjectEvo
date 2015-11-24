@@ -12,5 +12,5 @@ function ArenaModule::create( %this )
 
 function ArenaModule::destroy( %this )
 {
-    ArenaModule::cancelPendingEvents();
+    
 }

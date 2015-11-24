@@ -21,9 +21,8 @@ function PlayerStrike::initialize(%this)
 	%this.driftSpeed = 8;	
 	%this.lifeSpan = 0.25 * 1000;	//ms
 	
-	%this.sizeRatio = $pixelToWorldRatio;
-	%this.myWidth = 46 * %this.sizeRatio;
-	%this.myHeight = 174 * %this.sizeRatio;
+	%this.myWidth = 46 * $pixelsToWorldUnits;
+	%this.myHeight = 174 * $pixelsToWorldUnits;
 	
 	%this.setupSprite();
 		

@@ -23,7 +23,7 @@ function SpeedShotPickup::initialize(%this)
 	%this.spinSpeed = 30;	
 	
 	//-Info---
-	%this.sizeRatio = $pixelToWorldRatio;
+	%this.sizeRatio = $pixelsToWorldUnits;
 	%this.myWidth = 1.5 * 32 * %this.sizeRatio;
 	%this.myHeight = 1.5 * 32 * %this.sizeRatio;
 	

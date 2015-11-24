@@ -15,7 +15,7 @@ function EnemyTarSlick::initialize(%this)
 	%this.setSceneLayer(29);
 	%this.fixedAngle = true;
 		
-	%this.sizeRatio = $pixelToWorldRatio;
+	%this.sizeRatio = $pixelsToWorldUnits;
 	%this.myWidth = 128 * %this.sizeRatio;
 	%this.myHeight = 128 * %this.sizeRatio;
 	

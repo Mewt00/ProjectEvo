@@ -14,7 +14,7 @@ function EnemyShooterBullet::initialize(%this)
 	
 	%this.shotSpeed = 75;		
 	%this.setBullet(true);
-	%this.sizeRatio = $pixelToWorldRatio;
+	%this.sizeRatio = $pixelsToWorldUnits;
 	%this.myWidth = 30 * %this.sizeRatio;
 	%this.myHeight = 8 * %this.sizeRatio;
 	

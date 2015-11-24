@@ -17,6 +17,7 @@
 #include <math.h>
 #include <vector>
 #include <algorithm>
+#include <thread>
 #include "Genotype.h"
 //#include "GeneticAlgorithm_ScriptBinding.h"
 
@@ -31,6 +32,7 @@ using std::string;
 using std::iterator;
 using std::list;
 using std::vector;
+using std::thread;
 
 namespace Evolution {
 
@@ -60,11 +62,17 @@ namespace Evolution {
 		double enemyDPSwing;
 		double enemyDPShot;
 
-		GeneticAlgorithm() {}
+		string resultChromosome;
+
+		thread* myThread;
+
+		GeneticAlgorithm() { resultChromosome = "0 0 0 0 0 0 1 0 0 0 0 0 0 1";}
 		virtual ~GeneticAlgorithm() {}
 
 	public:
-		string run( );
+		void run( );
+		void runCalculations( );
+		string retrieveChromosome();
 
 		void crossover ( );
 		void elitist ( Genotype );

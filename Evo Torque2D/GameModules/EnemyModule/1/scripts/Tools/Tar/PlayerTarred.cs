@@ -22,7 +22,7 @@ function PlayerTarred::initialize(%this)
 	
 	%this.fadeSpan = %this.lifeSpan/6;
 	
-	%this.sizeRatio = $pixelToWorldRatio;
+	%this.sizeRatio = $pixelsToWorldUnits;
 	%this.myWidth = 210*%this.sizeRatio;
 	%this.myHeight = 164*%this.sizeRatio;
 	%this.setupSprite();

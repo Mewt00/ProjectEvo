@@ -32,7 +32,6 @@ function EnemyUnit::configureTools(%this, %chromosome)
 	
 	%this.myBodyContainer = new SimSet();
 	
-	
 	//Build blobs first
 	//Add first blob
 	%this.myBodyContainer.add(%this.addToolNode(%this.blobToolName, "0 0"));	//0,0 is always first Blob node
@@ -55,7 +54,8 @@ function EnemyUnit::configureTools(%this, %chromosome)
 		%toolToAddTypeCounts[%i] = %this.toolTypeCounts[%i];
 	}
 	
-	//Add one tool at a time, cycling through types- ensures as many DIFFERENT tool types get spots on blobs, before they start stacking
+	//Add one tool at a time, cycling through types- ensures as many DIFFERENT tool types get 
+	//spots on blobs, before they start stacking
 	%stillAddingSum = 1;
 	while(%stillAddingSum > 0)			//continue while tool has been added in the last loop
 	{
@@ -106,6 +106,7 @@ function EnemyUnit::configureSingleTool( %this, %toolType, %toAddCount )
 		}
 		else							//NOT ENOUGH BLOBS: add on an illegal spot. Should not have to happen
 		{
+			echo("Not enough blobs, illegal 5 tool types to 1 blob");
 			%nextNode = %this.addToolNode(%toolType, %nextPosition);		//e.g.: 5 tool types, 1 blob
 			%this.myBodyContainer.add(%nextNode);
 		}

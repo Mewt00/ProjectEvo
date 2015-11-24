@@ -2,7 +2,7 @@
 // Effects: Health pickup. a copy of Pickup.cs?
 // TODO: I believe this was a preliminary to the "PickupModule/1/scripts/Pickup.cs", most likely delete this file.
 //-----------------------------------------------------------------------------
-
+echo("effects");
 function Effects::onAdd( %this )
 {
 	%this.initialize();
@@ -19,7 +19,7 @@ function Effects::initialize(%this)
 	%this.fixedAngle = true;
 	
 	//Stats
-	%this.sizeRatio = $pixelToWorldRatio;
+	%this.sizeRatio = $pixelsToWorldUnits;
 	%this.myWidth = 1.5 * 32 * %this.sizeRatio;
 	%this.myHeight = 1.5 * 32 * %this.sizeRatio;
 	%this.healthPickup = 50;

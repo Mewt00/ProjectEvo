@@ -12,9 +12,8 @@ function PlayerBulletHit::initialize(%this)
 	%this.setSceneLayer(4);
 	%this.fixedAngle = true;
 		
-	%this.sizeRatio = $pixelToWorldRatio;
-	%this.myWidth = 18 * %this.sizeRatio * 2.5;
-	%this.myHeight = 11 * %this.sizeRatio * 2.5;
+	%this.myWidth = 18 * $pixelsToWorldUnits * 2.5;
+	%this.myHeight = 11 * $pixelsToWorldUnits * 2.5;
 	
 	%this.setLifetime(0.25);
 	

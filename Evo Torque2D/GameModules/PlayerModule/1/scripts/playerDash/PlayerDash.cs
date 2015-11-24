@@ -18,9 +18,8 @@ function PlayerDash::initialize(%this)
 	%this.driftSpeed = 3;	
 	%this.lifeSpan = 0.2 * 1000;	//ms
 	
-	%this.sizeRatio = $pixelToWorldRatio;
-	%this.myWidth = 219 * %this.sizeRatio;
-	%this.myHeight = 137 * %this.sizeRatio;
+	%this.myWidth = 219 * $pixelsToWorldUnits;
+	%this.myHeight = 137 * $pixelsToWorldUnits;
 	
 	%this.setupSprite();
 		

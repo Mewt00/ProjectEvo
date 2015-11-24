@@ -1,11 +1,11 @@
 
 //-----------------------------------------------------------------------------
-//Copyright (c) 2015 Chubby Bunny, LLC
+//Copyright (c) 2015 RABBAT Studios
 //-----------------------------------------------------------------------------
 
 
 /// Game
-$Game::CompanyName              = "Chubby Bunny";
+$Game::CompanyName              = "RABBAT Studios";
 $Game::ProductName              = "Project Evo";
 /*
 /// iOS
@@ -42,6 +42,7 @@ $pref::T2D::imageAssetGlobalFilterMode = Bilinear;
 $pref::T2D::TAMLSchema="";
 
 /// Video
+$pref::timeManagerProcessInterval = 34;
 $pref::Video::appliedPref = 0;
 $pref::Video::disableVerticalSync = 1;
 $pref::Video::displayDevice = "OpenGL";

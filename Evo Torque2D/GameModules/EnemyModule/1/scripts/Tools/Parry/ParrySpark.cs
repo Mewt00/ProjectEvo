@@ -20,7 +20,7 @@ function ToolParrySpark::initialize(%this)
 	%this.lifeSpan = 0.4 * 1000;	//ms
 	
 	//-Info---
-	%this.sizeRatio = $pixelToWorldRatio;
+	%this.sizeRatio = $pixelsToWorldUnits;
 	%this.myWidth = 43 * %this.sizeRatio;
 	%this.myHeight = 42 * %this.sizeRatio;
 	

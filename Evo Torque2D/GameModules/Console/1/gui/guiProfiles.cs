@@ -192,7 +192,7 @@ if (!isObject(GuiPopUpMenuProfile)) new GuiControlProfile (GuiPopUpMenuProfile :
 };
 
 //-----------------------------------------------------------------------------
-
+*/
 if (!isObject(GuiTextProfile)) new GuiControlProfile (GuiTextProfile)
 {
     border=false;
@@ -211,7 +211,7 @@ if (!isObject(GuiTextProfile)) new GuiControlProfile (GuiTextProfile)
     numbersOnly = false;
     cursorColor = "0 0 0 255";
 };
-
+/*
 //-----------------------------------------------------------------------------
 
 if (!isObject(GuiCheckBoxProfile)) new GuiControlProfile (GuiCheckBoxProfile)

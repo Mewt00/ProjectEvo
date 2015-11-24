@@ -19,11 +19,18 @@ const string PREVIOUSROOMINFO = ".\\utilities\\ga_input.txt";
 const string PASTCASEINFO = ".\\caselist.txt";
 const double WEIGHTS[NTOOLS] = {1.25, 1.25, 1, 1, 1, 1, 1};
 
-ConsoleMethod(GeneticAlgorithm, run, const char *, 2, 2, "() Gets the object's position.\n"
+ConsoleMethod(GeneticAlgorithm, run, void, 2, 2, "() Gets the object's position.\n"
+                                                              "@return chromosome.")
+{
+	// Calculate result.  
+   object->run();
+}
+
+ConsoleMethod(GeneticAlgorithm, retrieveChromosome, const char *, 2, 2, "() Gets the object's position.\n"
                                                               "@return chromosome.")
 {
 	// Fetch result.  
-    string result = object->run();
+    string result = object->retrieveChromosome();
 	char* pBuffer = Con::getReturnBuffer(result.size() + 1);
 
 	//Con::printf("%d  %d" , (result.size(),sizeof(string)));
@@ -48,9 +55,15 @@ void GeneticAlgorithm::onRemove()
   Parent::onRemove();
 }
 
-string GeneticAlgorithm::run ( )
+void GeneticAlgorithm::run ( )
 {
-	Con::printf("Run");
+	myThread = new thread(&GeneticAlgorithm::runCalculations, this);
+	//myThread->join();
+}
+
+void GeneticAlgorithm::runCalculations ( )
+{
+	//Con::printf("Run");
 	ofstream fileOut;
 	fileOut.open(".\\utilities\\enginelogfinal.txt" );
 	
@@ -157,14 +170,21 @@ string GeneticAlgorithm::run ( )
 
 	//fileOut<< endl << result.size() << "Size" << sizeof(string) << endl;
 
-	Con::printf("GA %s\n",result.c_str());
+	//Con::printf("GA %s\n",result.c_str());
 	//Con::printf("Here");
 
 	
 	fileOut << endl << endl << result.c_str();
 	fileOut.close();
 
-	return result;
+	//return result;
+	resultChromosome = result;
+}
+
+string GeneticAlgorithm::retrieveChromosome ( )
+{
+	myThread->join();
+	return resultChromosome;
 }
 
 void GeneticAlgorithm::crossover ( )

@@ -1,0 +1,31 @@
+<GuiSpriteCtrl
+    Name="DefeatDialog"
+    Profile="GuiDefaultProfile"
+    HorizSizing="relative"
+    VertSizing="relative"
+    Position="0 0"
+    Extent="1280 720"
+    MinExtent="320 320"
+    Visible="0">
+	
+    <!-- Back to Menu-->
+    <GuiButtonCtrl
+        Name="ContinueButton"
+        Profile="GuiButtonProfile"
+        Text="Continue"
+        ButtonType="PushButton"
+        canSaveDynamicFields="0"
+        isContainer="0"
+        HorizSizing="relative"
+        VertSizing="relative"
+        Position="853 480"
+        Extent="200 30"
+        MinExtent="100 15"
+        canSave="1"
+        Visible="1"
+        Active="1"
+        hovertime="1000"
+        groupNum="-1"
+        useMouseEvents="1" />
+
+</GuiSpriteCtrl>

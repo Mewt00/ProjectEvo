@@ -1,52 +1,52 @@
-//-----------------------------------------------------------------------------
-// Torque Game Builder
-// Copyright (C) GarageGames.com, Inc.
-//-----------------------------------------------------------------------------
 
 if (!isObject(MaxDistanceBehavior))
 {
-  %template = new BehaviorTemplate(MaxDistanceBehavior);
+	%template = new BehaviorTemplate(MaxDistanceBehavior);
 
-  %template.friendlyName = "Maximum Distance";
-  %template.behaviorType = "AI";
-  %template.description  = "Set the object to face another object";
+	%template.friendlyName = "MaxDistanceBehavior";
+	%template.behaviorType = "Movement Base";
+	%template.description  = "Set a maximum distance to maintain";
 
-  %template.addBehaviorField(distance, "", int, 70);
-  //%template.addBehaviorField(distance, "", int, 50);
-  %template.addBehaviorField(scaled, "", bool, false);
-  %template.addBehaviorField(moveSpeed, "", int, 10);
-  %template.addBehaviorField(honcho, "", bool, false);
+	//%template.addBehaviorField(scaled, "", bool, false);
+	//%template.addBehaviorField(honcho, "", bool, false);
+	%template.addBehaviorField(friendlyName, "The name", string, "MaxDistanceBehavior");
+	%template.addBehaviorField(target, "The object to chase", object, "", t2dSceneObject);
+	%template.addBehaviorField(number, "The number of behaviors", int, 0);
+	%template.addBehaviorField(targetRotation, "Rotation to main target", float, 90.0);
+	%template.addBehaviorField(moveSpeed, "The speed", int, 0);
+	%template.addBehaviorField(distance, "Default distance to attempt to keep", int, 80);
+	%template.addBehaviorField(extra, "Distance input", int, -9999);
 }
 
 function MaxDistanceBehavior::onBehaviorAdd(%this)
 {
-  %this.owner.moveBehaviorCount++;
-  if(%this.owner.moveBehaviorCount == 1)
-    %this.honcho = true;
+	//%this.owner.setUpdateCallback(true);
+	%this.moveSpeed = 15 * %this.number;
+	if(%this.extra != -9999)
+		%this.distance = %this.extra;
 }
 
 function MaxDistanceBehavior::onUpdate(%this)
 {
-  if(%this.honcho == true){
-    %this.owner.specialX = 0;
-    %this.owner.specialY = 0;
-  }
-
-	if(!isObject(%this.owner))
+	if (!isObject(%this.target))
+		return;
+	
+	if(VectorDist(%this.owner.getPosition(), %this.target.getPosition()) > %this.distance)
 	{
-		%this.safeDelete();
-	}
-	else
-	{
-    if(VectorDist(%this.owner.getPosition(), %this.owner.mainTarget.getPosition()) > %this.distance){
-      %startVelocity = %this.owner.specialX SPC %this.owner.specialY;
-      %targetRotation = Vector2AngleToPoint (%this.owner.getPosition(), %this.owner.mainTarget.getPosition());//TODO?
-      
-      %xcomponent = %this.moveSpeed * mSin(mDegToRad(%targetRotation)) / %this.owner.moveBehaviorCount;
-      %ycomponent = %this.moveSpeed * mCos(mDegToRad(%targetRotation)) / %this.owner.moveBehaviorCount;
+		%this.targetRotation = Vector2AngleToPoint (%this.owner.getPosition(), %this.target.getPosition());
+	
+		%this.targetRotation += 180;
+		//echo("target rotation:    " @ %this.targetRotation);
+		%xPercent = mCos(%this.targetRotation);
+		%yPercent = mSin(%this.targetRotation);
+		
+		echo("X:    " @ %xPercent);
+		echo("Y:     " @ %yPercent);
+		echo("walkspeed:     " @ %this.owner.walkspeed);
 
-      %this.owner.specialX = getWord(%startVelocity, 0) + %xcomponent;
-      %this.owner.specialY = getWord(%startVelocity, 1) - %ycomponent;
-    }
+		
+		%this.owner.tempLinearVelocityX += %xPercent * %this.moveSpeed;
+		%this.owner.tempLinearVelocityY += %yPercent * %this.moveSpeed;
+		
 	}
 }

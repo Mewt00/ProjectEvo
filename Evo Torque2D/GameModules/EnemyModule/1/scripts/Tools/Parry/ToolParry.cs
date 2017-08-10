@@ -38,6 +38,13 @@ function ToolParry::initialize(%this)
 	}
 	
 	%this.owner.parryTools.add(%this);
+	
+	%this.owner.addEnemyBehavior("BlinkBehavior", 1);
+	/*for(%i = 0; %i < %this.owner.behaviorNamesSize; %i += 2)		
+	{
+		echo("%this.behaviorNames   " @ %this.owner.behaviorNames[%i] SPC %this.owner.behaviorNames[%i + 1]);
+	}
+	echo("Size: " SPC %this.owner.behaviorNamesSize);*/
 }
 
 //-----------------------------------------------------------------------------

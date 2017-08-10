@@ -53,6 +53,7 @@ function Arena::buildArena(%this)
 	%this.pausers = "ZigZagBehavior";
 	//List of behaviors that get paused
 	%this.pausees = "ChaseBehavior";
+	%this.currentEnemies = new SimSet();
 	
 	echo("Before wave");
 	%this.nextArenaWave();
@@ -114,6 +115,7 @@ function Arena::addBackgroundMusic(%this)
 function Arena::nextArenaWave(%this)
 {
 	echo("In wave");
+	%this.currentEnemies.clear();
 	%this.roomChromosomes = "";
 	
 	// Enemy Info
@@ -136,6 +138,21 @@ function Arena::nextArenaWave(%this)
 	
 	%this.schedule(1500, "spawning");
 	
+}
+
+//-----------------------------------------------------------------------------
+
+function Arena::updateGroup(%this )
+{
+	echo("updateGroup");
+    for(%i = 0; %i < getWordCount(%this.currentEnemies); %i++)
+    {
+        // iterate the group, call each object's update() method
+        %obj = %this.currentEnemies.getObject(%i);
+        %obj.updateGroup();
+    }
+    // do it again in 250 ms
+    schedule(32, "updateGroup", 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -301,6 +318,7 @@ function Arena::processRoomChromosomes(%this)
 	}
 	
 	echo("Chromosome done processing!");
+	%this.updateGroup();
 }
 
 //-----------------------------------------------------------------------------
@@ -322,6 +340,9 @@ function Arena::spawnEnemyUnit(%this, %localChromosome, %xPos, %yPos)
 	%newEnemy.initialize();			//manual constructor function
 	
 	%newEnemy.setPosition(%xPos, %yPos);
+	
+	echo("currentEnemy " SPC )
+	%this.currentEnemies.add(%newEnemy);
 
 	return %newEnemy;
 } 

@@ -39,6 +39,13 @@ function ToolAcid::initialize(%this)
 	%this.barrelYoffset = 0*%this.owner.sizeRatio;	
 	
 	%this.addTurret();
+	
+	%this.owner.addEnemyBehavior("ChaseBehavior", 1);
+	/*for(%i = 0; %i < %this.owner.behaviorNamesSize; %i += 2)		
+	{
+		echo("%this.behaviorNames   " @ %this.owner.behaviorNames[%i] SPC %this.owner.behaviorNames[%i + 1]);
+	}
+	echo("Size: " SPC %this.owner.behaviorNamesSize);*/
 }
 
 //-----------------------------------------------------------------------------

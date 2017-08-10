@@ -29,6 +29,12 @@ function ToolArmor::initialize(%this)
 	%this.armorRating = 2;
 	
 	%this.owner.armorValue += %this.armorRating*%this.stackLevel;
+	%this.owner.addEnemyBehavior("LungeBehavior", 1);
+	//for(%i = 0; %i < %this.owner.behaviorNamesSize; %i += 2)		
+	//{
+	//	echo("%this.behaviorNames   " @ %this.owner.behaviorNames[%i] SPC %this.owner.behaviorNames[%i + 1]);
+	//}
+	//echo("Size: " SPC %this.owner.behaviorNamesSize);
 }
 
 //-----------------------------------------------------------------------------

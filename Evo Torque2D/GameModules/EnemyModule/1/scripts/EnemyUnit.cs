@@ -23,7 +23,17 @@ function EnemyUnit::initialize(%this)
 	exec("./Tools/Blade/ToolBlade.cs");
 	exec("./Tools/Shooter/ToolShooter.cs");
 	
-    %this.setUpdateCallback(true);
+	//--Execute Behavior scripts-----------------------
+	exec("./behaviors/ai/faceObject.cs");
+	exec("./behaviors/movement/chase.cs");
+	exec("./behaviors/movement/zigzag.cs");
+	exec("./behaviors/movement/lunge.cs");
+	exec("./behaviors/movement/strafe.cs");
+	exec("./behaviors/movement/blink.cs");
+	exec("./behaviors/movement/minDistance.cs");
+	exec("./behaviors/movement/maxDistance.cs");
+	
+    //%this.setUpdateCallback(true);
 
 	//-Stats---
 	%this.fullHealth = 100;
@@ -57,20 +67,16 @@ function EnemyUnit::initialize(%this)
 	%this.sizeRatio = $pixelsToWorldUnits;
 	
 	%this.behaviorNames = "";
+	%this.behaviorExtras = "";
+	%this.behaviorNamesSize = 0;
 	%this.moveBehaviorCount = 0;
 	%this.specialX = 0;
 	%this.specialY = 0;
 
 	echo("inside enemy");
 	
-	//if(%this.noBehaviors != 1)  //?
-	//{
-		//%this.setAngle(getRandom(360));
-	%this.myPausees = new SimSet();
-	%this.myPausers = new SimSet();
-	echo("above setup behaviors");
-	%this.setupBehaviors();
-	//}
+
+	%this.myBehaviors = new SimSet();
 	
 	%this.setSceneLayer(10);
     %this.setCollisionGroups( Utility.getCollisionGroup("Player") SPC Utility.getCollisionGroup("Wall")  SPC Utility.getCollisionGroup("Enemies") );
@@ -80,6 +86,19 @@ function EnemyUnit::initialize(%this)
 	%this.maxBodySize = 0;								//largest (abs) indices for myBody position
 	%this.configureTools(%this.myChromosome);		// ordering: shield/parry/acid/tar/blade/shooter/blob (+1)
 	
+	echo("getWordCount(%this.myBehaviors)" SPC getWordCount(%this.myBehaviors));
+	for(%i = 0; %i < getWordCount(%this.myBehaviors); %i++)		
+	{
+		echo("%this.behaviorNames   " @ %this.myBehaviors.friendlyName SPC %this.myBehaviors.number);
+	}
+	
+	//echo("above setup behaviors");
+	//%this.setupBehaviors();
+	
+	/*%this.segmentWidth = 12 * $pixelsToWorldUnits;
+	%this.segmentHeight = 12 * $pixelsToWorldUnits;
+	
+	%this.drawHealthbar(%this.health);*/
 	//TODO add healthbar to the enemy compositesprite
 	%this.myHealthbar = new CompositeSprite()
 	{
@@ -88,8 +107,8 @@ function EnemyUnit::initialize(%this)
 		xOffset = 0;
 		yOffset = (%this.maxBodySize + 1)*%this.myBodyContainer.getObject(0).myHeight;
 	};
-
-  %this.getScene().add( %this.myHealthbar );
+	
+	%this.getScene().add( %this.myHealthbar );
 }
 
 //-----------------------------------------------------------------------------
@@ -103,21 +122,29 @@ function EnemyUnit::setupBehaviors( %this )
 	exec("./behaviors/movement/lunge.cs");
 	exec("./behaviors/movement/strafe.cs");
 	exec("./behaviors/movement/blink.cs");
+	exec("./behaviors/movement/minDistance.cs");
+	exec("./behaviors/movement/maxDistance.cs");
 	
 	//List of behaviors to attach
 	
-	//%this.getBehaviorTypes();
-	%this.behaviorNames = "BlinkBehavior 1";
+	//%this.behaviorNames = "BlinkBehavior 1 ChaseBehavior 1"; // ZigZagBehavior 1 LungeBehavior 1 StrafeBehavior 1";
+	//%this.behaviorNamesSize = 0;
+	//%this.addToolBehavior("BlinkBehavior", 1);
+	for(%i = 0; %i < getWordCount(%this.myBehaviors); %i++)		
+	{
+		echo("%this.behaviorNames   " @ %this.myBehaviors.friendlyName SPC %this.myBehaviors.number);
+	}
 	
-	for(%i = 0; %i < getWordCount(%this.behaviorNames); %i += 2)
+	
+	/*for(%i = 0; %i < %this.behaviorNamesSize; %i += 2)
 	{
 		echo("1");
-		%individualBehavior = getWord(%this.behaviorNames, %i).createInstance();
+		%individualBehavior = %this.behaviorNames[%i].createInstance();
 		%individualBehavior.target = %this.mainTarget;
-		%individualBehavior.number = getWord(%this.behaviorNames, %i + 1);
+		%individualBehavior.number = %this.behaviorNames[%i + 1];
 		%this.addBehavior(%individualBehavior);
 		echo("2");
-		/*for(%j = 0; %j < getWordCount(%this.myArena.pausers); %j++)
+		//for(%j = 0; %j < getWordCount(%this.myArena.pausers); %j++)
 		{
 			echo("3");
 			if(getWord(%this.behaviorNames, %i) $= getWord(%this.myArena.pausers, %j))
@@ -128,11 +155,11 @@ function EnemyUnit::setupBehaviors( %this )
 			echo("4");
 			if(getWord(%this.behaviorNames, %i) $= getWord(%this.myArena.pausees, %j))
 				%this.myPausees.add(%individualBehavior);
-		}*/
+		//}
 		
 		echo("name :   " @ getWord(%this.behaviorNames, %i) @ getWord(%this.behaviorNames, %i + 1));
 		
-	}
+	}*/
 	
 	/*if(getWordCount(%this.myPausers) > 0 && getWordCount(%this.myPausees) > 0)
 		for(%i = 0; %i < getWordCount(%this.myPausers); %i++)
@@ -144,51 +171,125 @@ function EnemyUnit::setupBehaviors( %this )
 				//%this.Connect(%this.myPausers.getObject(%i), %this.myPausees.getObject(%j), unpauseForZigZag, beingUnpaused);
 			}
 		}*/
-	echo("forwardSpeed  " @ %this.forwardSpeed);
-	/*%chaseObj = getWord(%behaviorNames, 0).createInstance();
-	%chaseObj.target = %this.mainTarget;
-	%this.addBehavior(%chaseObj);
-	
-	%zigZagObj = getWord(%behaviorNames, 2).createInstance();
-	%zigZagObj.target = %this.mainTarget;
-	%this.addBehavior(%zigZagObj);
-	
-	%this.Connect(%zigZagObj, %chaseObj, pauseForZigZag, beingPaused);
-	%this.Connect(%zigZagObj, %chaseObj, unpauseForZigZag, beingUnpaused);
-	//%this.Raise(%zigZagObj, pauseForZigZag);
-	
-	%faceObj = getWord(%behaviorNames, 1).createInstance();
-	%faceObj.target = %this.mainTarget;
-	%this.addBehavior(%faceObj);
-	*/
-	/*
-	%driftMove = DriftBehavior.createInstance();
-	%driftMove.speed = %this.walkSpeed;
-	%this.addBehavior(%driftMove);
-	
-	%wanderMove = getWord(%behaviorNames, 0).createInstance();
-	%wanderMove.turnDelay = 1;
-	%wanderMove.numDires = 8;
-	%wanderMove.moveSpeed = %this.walkSpeed;
-	%wanderMove.turnSpeed = %this.turnSpeed;
-	%this.addBehavior(%wanderMove);
-	
-	//%minDistance = MinDistanceBehavior.createInstance();
-	//%this.addBehavior(%minDistance);
-	
-	//%maxDistance = MaxDistanceBehavior.createInstance();
-	//%this.addBehavior(%maxDistance);
-	
-	%strafe = getWord(%behaviorNames, 2).createInstance();
-	%this.addBehavior(%strafe);*/
 }
 
 //-----------------------------------------------------------------------------
 
-//function EnemyUnit::getBehaviorTypes( %this )
-//{
+function EnemyUnit::addEnemyBehavior( %this, %behavior, %number )
+{
+	echo("Inside addEnemyBehavior1");
+	%this.addEnemyBehavior(%behavior, %number, -9999);
+}
+
+function EnemyUnit::addEnemyBehavior( %this, %behavior, %number, %extra )
+{
+	echo("Inside addEnemyBehavior2");
+	if(getWordCount(%this.myBehaviors) != 0)
+	{
+		for(%i = 0; %i < getWordCount(%this.myBehaviors); %i++)		
+		{
+			echo("friendly    behavior" SPC %this.myBehaviors.friendlyName SPC %behavior);
+			if(%this.myBehaviors.friendlyName $= %behavior)
+			{
+				%this.myBehaviors.number = %this.myBehaviors.number + %number;
+				return;
+			}
+		}
+	}
+	%individualBehavior = %behavior.createInstance();
+	%individualBehavior.target = %this.mainTarget;
+	%individualBehavior.number = %number;
+	%individualBehavior.extra = %extra;
+	%this.addBehavior(%individualBehavior);
+	%this.myBehaviors.add(%individualBehavior);
+}
+
+/*//-----------------------------------------------------------------------------
+function EnemyUnit::addToolBehavior( %this, %behavior, %number )
+{
+	%this.addToolBehavior(%behavior, %number, -9999);
+}
+
+function EnemyUnit::addToolBehavior( %this, %behavior, %number, %extra )
+{
+	echo("Inside addToolBehavior");
+	if(%this.behaviorNamesSize != 0)
+	{
+		for(%i = 0; %i < %this.behaviorNamesSize; %i += 2)		
+		{
+			if(%this.behaviorNames[%i] $= %behavior)
+			{
+				%this.behaviorNames[%i + 1] = %this.behaviorNames[%i + 1] + %number;
+				//%this.behaviorNamesSize++;
+				return;
+			}
+		}
+		%this.behaviorNames[%this.behaviorNamesSize] = %behavior;
+		%this.behaviorNames[%this.behaviorNamesSize + 1] = %number;
+		%this.behaviorNamesSize += 2;
+	}
+	else
+	{
+		%this.behaviorNames[0] = %behavior;
+		%this.behaviorNames[1] = %number;
+		%this.behaviorNamesSize += 2;
+		//echo("%this.behaviorNames   " @ %this.behaviorNames[0] SPC %this.behaviorNames[1]);
+	}
+}*/
+
+
+//-----------------------------------------------------------------------------
+
+/*function EnemyUnit::assessDamage( %this )
+{
+	if(!isObject(%this.owner))
+	{
+		%this.safeDelete();
+		return;
+	}
+		
+	%this.clearSprites();
+
+	%this.drawHealthbar();
 	
-//}
+}
+//-----------------------------------------------------------------------------
+
+function Healthbar::updateHealthbar(%this)
+{
+	%numberBars = %this.fullHealth/10;
+	
+	%currentHealthBars = %this.health/10;
+	
+	for(%i = 0; %i < %numberBars - %currentHealthBars; %i++)
+	{
+		%this.selectSpriteName("")
+		%this.addSprite(%currX SPC "10");
+		%this.setSpriteImage("GameAssets:healthBarSegment", 0);
+		%this.setSpriteSize(%this.segmentWidth, %this.segmentHeight);
+		
+		%currX += %this.segmentWidth;
+	}
+	
+}
+
+//-----------------------------------------------------------------------------
+
+function Healthbar::drawHealthbar(%this)
+{
+	%numSegs = %this.health/10;
+	
+	%currentX = -(%numSegs*%this.segmentWidth)/2;
+	for(%i = 0; %i < %numSegs; %i++)
+	{
+		%this.addSprite(%currentX SPC "10");
+		%this.setSpriteImage("GameAssets:healthBarSegment", 0);
+		%this.setSpriteSize(%this.segmentWidth, %this.segmentHeight);
+		%this.setSpriteName(%i);
+		
+		%currentX += %this.segmentWidth;
+	}
+}*/
 
 //-----------------------------------------------------------------------------
 
@@ -201,9 +302,26 @@ function EnemyUnit::onCollision(%this, %object, %collisionDetails)
 }
 
 //-----------------------------------------------------------------------------
-//Move at walkSpeed
 
-function EnemyUnit::onUpdate( %this )
+function EnemyUnit::updateGroup(%this )
+{
+	echo("updateGroup in enemy");
+	if(getWordCount(%this.myBehaviors) == 0)
+		return;
+    for(%i = 0; %i < getWordCount(%this.myBehaviors); %i++)
+    {
+        // iterate the group, call each object's update() method
+        %obj = %this.myBehaviors.getObject(%i);
+        %obj.onUpdate();
+    }
+    // do it again in 250 ms
+    //schedule(32, "updateGroup", 0);
+	%this.updateEnemy();
+}
+
+//-----------------------------------------------------------------------------
+
+function EnemyUnit::updateEnemy( %this )
 {
 	echo("enemy: " @ %this.getId());
 	echo("enemy speed is " @ %this.tempLinearVelocityX @ " by " @ %this.tempLinearVelocityY);
@@ -214,6 +332,21 @@ function EnemyUnit::onUpdate( %this )
 	%this.setLinearVelocityY(%this.tempLinearVelocityY);
 	%this.tempLinearVelocityX = 0;
 	%this.tempLinearVelocityY = 0;
+}
+
+//-----------------------------------------------------------------------------
+
+function EnemyUnit::onUpdate( %this )
+{
+	/*echo("enemy: " @ %this.getId());
+	echo("enemy speed is " @ %this.tempLinearVelocityX @ " by " @ %this.tempLinearVelocityY);
+	echo("");
+	//%this.setLinearVelocityX(0);
+	//%this.setLinearVelocityY(0);
+	%this.setLinearVelocityX(%this.tempLinearVelocityX);
+	%this.setLinearVelocityY(%this.tempLinearVelocityY);
+	%this.tempLinearVelocityX = 0;
+	%this.tempLinearVelocityY = 0;*/
 }
 //-----------------------------------------------------------------------------
 
@@ -315,6 +448,7 @@ function EnemyUnit::kill( %this )
 		}
 	}
 	
+	%this.clearBehaviors();
 	%this.safeDelete();
 	%this.myArena.EnemyCount--;
 }

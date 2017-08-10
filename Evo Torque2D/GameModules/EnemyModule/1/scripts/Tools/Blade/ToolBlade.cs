@@ -34,6 +34,14 @@ function ToolBlade::initialize(%this)
 	//shot barrel offset (instead of bullet coming out of center of cannon)	
 	%this.bladeXoffset = %this.myWidth*0.75;
 	%this.bladeYoffset = 0;	
+	
+	%this.owner.addEnemyBehavior("ChaseBehavior", 1);
+	%this.owner.addEnemyBehavior("ZigZagBehavior", 1);
+	/*for(%i = 0; %i < %this.owner.behaviorNamesSize; %i += 2)		
+	{
+		echo("%this.behaviorNames   " @ %this.owner.behaviorNames[%i] SPC %this.owner.behaviorNames[%i + 1]);
+	}
+	echo("Size: " SPC %this.owner.behaviorNamesSize);*/
 }
 
 //-----------------------------------------------------------------------------

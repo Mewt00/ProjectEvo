@@ -40,6 +40,14 @@ function ToolShooter::initialize(%this)
 	%this.addTurret();
 	
     %this.setUpdateCallback(true);
+	
+	%this.owner.addEnemyBehavior("StrafeBehavior", 1);
+	%this.owner.addEnemyBehavior("MinDistanceBehavior", 1);
+	/*for(%i = 0; %i < %this.owner.behaviorNamesSize; %i += 2)		
+	{
+		echo("%this.behaviorNames   " @ %this.owner.behaviorNames[%i] SPC %this.owner.behaviorNames[%i + 1]);
+	}
+	echo("Size: " SPC %this.owner.behaviorNamesSize);*/
 }
 
 //-----------------------------------------------------------------------------
